@@ -1,7 +1,8 @@
 {
   "devDependencies": {
     "git-commit-msg-linter": "^5.0.4",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "ts-jest": "^29.1.1"
   },
   "scripts": {
     "prepare": "husky install"
