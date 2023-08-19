@@ -5,5 +5,8 @@
   },
   "scripts": {
     "prepare": "husky install"
+  },
+  "dependencies": {
+    "jest": "^29.6.2"
   }
 }
