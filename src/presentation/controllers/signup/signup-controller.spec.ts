@@ -1,18 +1,31 @@
+import { AddAccount, AddAccountModel } from '../../../domain/usecases/add-account'
 import { MissingParamsError } from '../../errors/missing-params-error'
 import { badRequest } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { SignUpController } from './signup-controller'
 
-const makeFakeAddAccount = (): HttpRequest => ({
-  body: {  
-    username: 'any_username',
-    email: 'any_username',
-    password: 'string',
-    passwordConfirmation: 'any_username',
-    privateKey: 'any_key'
-  }
+const makeFakeAddAccount = (): AddAccountModel => ({
+  username: 'any_username',
+  email: 'any_username',
+  password: 'string',
+  passwordConfirmation: 'any_username',
+  privateKey: 'any_key'
 })
+
+const makeFakeRequest = (): HttpRequest => ({
+  body: makeFakeAddAccount()
+})
+
+const makeFakeAddAccountStub = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add (account: AddAccountModel): Promise<AddAccountModel | null> {
+      return await Promise.resolve(makeFakeAddAccount())
+
+    }
+  }
+  return new AddAccountStub()
+}
 
 const makeValidationStub = (): Validation => {
   class ValidationStub implements Validation {
@@ -25,17 +38,20 @@ const makeValidationStub = (): Validation => {
 }
 
 interface SutTypes {
-  validationStub: Validation,
   sut: SignUpController
+  validationStub: Validation,
+  addAccountStub: AddAccount
 }
 
 const makeSut = (): SutTypes => {
   const validationStub = makeValidationStub()
-  const sut = new SignUpController(validationStub)
+  const addAccountStub = makeFakeAddAccountStub()
+  const sut = new SignUpController(validationStub, addAccountStub)
 
   return {
+    sut,
+    addAccountStub,
     validationStub,
-    sut
   }
 }
 
@@ -44,14 +60,21 @@ describe('SignUpController', () => {
   test('should call validation with correct values', async () => { 
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validation')
-    await sut.handle(makeFakeAddAccount())
-    expect(validateSpy).toHaveBeenCalledWith(makeFakeAddAccount())
+    await sut.handle(makeFakeRequest())
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest())
    })
 
    test('should return 400 if validation return error', async () => { 
     const { sut, validationStub } = makeSut()
     jest.spyOn(validationStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
-    const response = await sut.handle(makeFakeAddAccount())
+    const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
+   })
+
+   test('should call addAccount with correct values', async () => { 
+    const { sut, addAccountStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountStub, 'add')
+    await sut.handle(makeFakeRequest())
+    expect(addSpy).toHaveBeenCalledWith(makeFakeAddAccount())
    })
 })
