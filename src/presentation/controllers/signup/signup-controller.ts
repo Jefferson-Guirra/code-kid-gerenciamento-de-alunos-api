@@ -1,5 +1,5 @@
 import { AddAccount } from '../../../domain/usecases/add-account';
-import { badRequest, ok } from '../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../helpers/http/http';
 import { Controller } from '../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
@@ -14,8 +14,10 @@ export class SignUpController implements  Controller {
     if (error) {
       return badRequest(error)
     }
-    console.log(httpRequest.body)
-    await this.addAccount.add(httpRequest.body)
+    const account = await this.addAccount.add(httpRequest.body)
+    if (!account) {
+      return unauthorized()
+    }
     return ok('success')
 
   }
