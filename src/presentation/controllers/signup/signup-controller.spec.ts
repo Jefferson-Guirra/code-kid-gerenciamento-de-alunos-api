@@ -1,6 +1,6 @@
 import { AddAccount, AddAccountModel } from '../../../domain/usecases/add-account'
 import { MissingParamsError } from '../../errors/missing-params-error'
-import { badRequest } from '../../helpers/http/http'
+import { badRequest, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { SignUpController } from './signup-controller'
@@ -76,5 +76,12 @@ describe('SignUpController', () => {
     const addSpy = jest.spyOn(addAccountStub, 'add')
     await sut.handle(makeFakeRequest())
     expect(addSpy).toHaveBeenCalledWith(makeFakeAddAccount())
+   })
+
+   test('should return 401 if addAccount return null', async () => { 
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
    })
 })
