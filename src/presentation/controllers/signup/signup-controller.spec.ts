@@ -1,6 +1,6 @@
 import { AddAccount, AddAccountModel } from '../../../domain/usecases/add-account'
 import { MissingParamsError } from '../../errors/missing-params-error'
-import { badRequest, unauthorized } from '../../helpers/http/http'
+import { badRequest, serverError, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { SignUpController } from './signup-controller'
@@ -83,5 +83,12 @@ describe('SignUpController', () => {
     jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.resolve(null))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(unauthorized())
+   })
+
+   test('should return 500 if addAccount fails', async () => { 
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(Promise.reject(new Error('')))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(serverError(new Error('')))
    })
 })
