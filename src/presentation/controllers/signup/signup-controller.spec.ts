@@ -1,3 +1,4 @@
+import { AccountModel } from '../../../domain/models/account'
 import { AddAccount, AddAccountModel } from '../../../domain/usecases/add-account'
 import { MissingParamsError } from '../../errors/missing-params-error'
 import { badRequest, serverError, unauthorized } from '../../helpers/http/http'
@@ -5,12 +6,11 @@ import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { SignUpController } from './signup-controller'
 
-const makeFakeAddAccount = (): AddAccountModel => ({
+const makeFakeAddAccount = (): AccountModel => ({
   username: 'any_username',
   email: 'any_username',
   password: 'string',
-  passwordConfirmation: 'any_username',
-  privateKey: 'any_key'
+  id: 'any_id'
 })
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -19,7 +19,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeFakeAddAccountStub = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AddAccountModel | null> {
+    async add (account: AddAccountModel): Promise<AccountModel | null> {
       return await Promise.resolve(makeFakeAddAccount())
 
     }
