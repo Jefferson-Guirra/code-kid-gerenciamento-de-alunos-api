@@ -6,8 +6,16 @@ export class DbAddAccountRepository implements AddAccount {
   constructor(private readonly loadAccount: LoadAccountByEmailRepository) {}
   async add (account: AddAccountModel): Promise<AccountModel | null> {
     const { email } = account
-    await this.loadAccount.loadByEmail(email)
-    return null
+    const loadAccount = await this.loadAccount.loadByEmail(email)
+    if(!loadAccount) {
+      return null
+    }
+    return {
+      username: 'any_username',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      id: 'any_id'
+    }
 
 
   }
