@@ -6,13 +6,22 @@ import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { SignUpController } from './signup-controller'
 
-const makeFakeAddAccount = (): AccountModel => ({
+const makeFakeAddAccount = (): AddAccountModel => ({
   username: 'any_username',
   email: 'any_username',
   password: 'string',
-  id: 'any_id'
+  passwordConfirmation: 'any_password',
+  privateKey: 'any_key',
+
 })
 
+const makeFakeAccount = (): AccountModel => ({
+  username: 'any_username',
+  email: 'any_username',
+  password: 'string',
+  id: 'string'
+
+})
 const makeFakeRequest = (): HttpRequest => ({
   body: makeFakeAddAccount()
 })
@@ -20,7 +29,7 @@ const makeFakeRequest = (): HttpRequest => ({
 const makeFakeAddAccountStub = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountModel): Promise<AccountModel | null> {
-      return await Promise.resolve(makeFakeAddAccount())
+      return await Promise.resolve(makeFakeAccount())
 
     }
   }
