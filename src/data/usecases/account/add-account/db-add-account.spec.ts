@@ -47,4 +47,10 @@ describe('DbAddAccountRepository', () => {
     await sut.add(makeFakeAddAccount())
     expect(loadAccountSpy).toHaveBeenCalledWith('any_email@mail.com')
    })
+   test('should return null if LoadAccount return account', async () => { 
+    const { sut, loadAccountByEmailStub } = makeSut()
+    jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.add(makeFakeAddAccount())
+    expect(response).toBeFalsy()
+   })
  })
