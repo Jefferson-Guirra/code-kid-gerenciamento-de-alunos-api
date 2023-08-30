@@ -1,6 +1,7 @@
 import { AccountModel } from '../../../../domain/models/account'
 import { AddAccountModel } from '../../../../domain/usecases/add-account'
 import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load-account-by-email-repository'
+import { ValidateAddAccountKeyRepository } from '../../../protocols/db/keys/validate-add-account-key-repository'
 import { DbAddAccountRepository } from './db-add-account'
 
 const makeFakeAccount = ():AccountModel => ({
@@ -16,6 +17,15 @@ const makeFakeAddAccount = (): AddAccountModel => ({
   passwordConfirmation: 'any_password',
   privateKey: 'any_key'
 })
+
+const makeFakeValidateAddAccountKeyStub = (): ValidateAddAccountKeyRepository => {
+  class ValidateAddAccountKeyRepositoryStub implements ValidateAddAccountKeyRepository {
+    async validateAddKey (key: string): Promise<boolean> {
+      return await Promise.resolve(true)
+    }
+  }
+  return new ValidateAddAccountKeyRepositoryStub()
+}
 const makeLoadAccountByEmailStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel | null> {
@@ -26,17 +36,20 @@ const makeLoadAccountByEmailStub = (): LoadAccountByEmailRepository => {
 }
 
 interface SutTypes {
+  validateAddAccountKeyStub: ValidateAddAccountKeyRepository
   loadAccountByEmailStub: LoadAccountByEmailRepository
   sut: DbAddAccountRepository
 }
 
 const makeSut = (): SutTypes => {
+  const validateAddAccountKeyStub =  makeFakeValidateAddAccountKeyStub()
   const loadAccountByEmailStub = makeLoadAccountByEmailStub()
-  const sut = new DbAddAccountRepository(loadAccountByEmailStub)
+  const sut = new DbAddAccountRepository(loadAccountByEmailStub, validateAddAccountKeyStub)
 
   return {
    sut, 
-   loadAccountByEmailStub
+   loadAccountByEmailStub,
+   validateAddAccountKeyStub
   }
 }
 
@@ -53,4 +66,10 @@ describe('DbAddAccountRepository', () => {
     const response = await sut.add(makeFakeAddAccount())
     expect(response).toBeFalsy()
    })
+   test('should call ValidateKey with correct key', async () => { 
+    const { sut, validateAddAccountKeyStub } = makeSut()
+    const validateSpy = jest.spyOn(validateAddAccountKeyStub, 'validateAddKey')
+    await sut.add(makeFakeAddAccount())
+    expect(validateSpy).toHaveBeenCalledWith('any_key')
+    })
  })
