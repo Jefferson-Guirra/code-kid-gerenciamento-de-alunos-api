@@ -14,7 +14,10 @@ export class DbAddAccountRepository implements AddAccount {
     if(!loadAccount) {
       return null
     }
-    await this.validateKey.validateAddKey(privateKey)
+    const validate = await this.validateKey.validateAddKey(privateKey)
+    if(!validate) {
+      return null
+    }
     return {
       username: 'any_username',
       email: 'any_email@mail.com',
