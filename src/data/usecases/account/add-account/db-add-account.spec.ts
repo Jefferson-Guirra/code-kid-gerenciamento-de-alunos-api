@@ -84,4 +84,10 @@ describe('DbAddAccountRepository', () => {
       const response = await sut.add(makeFakeAddAccount())
       expect(response).toBeFalsy()
       })
+      test('should return throw if ValidateKey fails', async () => { 
+        const { sut, validateAddAccountKeyStub } = makeSut()
+        jest.spyOn(validateAddAccountKeyStub, 'validateAddKey').mockReturnValueOnce(Promise.reject(new Error('')))
+        const promise =  sut.add(makeFakeAddAccount())
+        await expect(promise).rejects.toThrow()
+       })
  })
