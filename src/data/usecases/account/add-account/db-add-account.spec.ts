@@ -72,4 +72,10 @@ describe('DbAddAccountRepository', () => {
     await sut.add(makeFakeAddAccount())
     expect(validateSpy).toHaveBeenCalledWith('any_key')
     })
+    test('should return null if  ValidateKey return false', async () => { 
+      const { sut, validateAddAccountKeyStub } = makeSut()
+      jest.spyOn(validateAddAccountKeyStub, 'validateAddKey').mockReturnValueOnce(Promise.resolve(false))
+      const response = await sut.add(makeFakeAddAccount())
+      expect(response).toBeFalsy()
+      })
  })
