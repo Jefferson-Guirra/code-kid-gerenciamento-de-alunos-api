@@ -20,14 +20,6 @@ export class DbAddAccountRepository implements AddAccount {
     if(!validate) {
       return null
     }
-    await this.account.addAccount({ username, email, password, privateKey, passwordConfirmation})
-    return {
-      username: 'any_username',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-      id: 'any_id'
-    }
-
-
+    return await this.account.addAccount({ username, email, password, privateKey, passwordConfirmation})
   }
 }
