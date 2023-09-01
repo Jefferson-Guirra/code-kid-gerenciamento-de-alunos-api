@@ -116,4 +116,9 @@ describe('DbAddAccountRepository', () => {
       const promise =  sut.add(makeFakeAddAccount())
       await expect(promise).rejects.toThrow()
     })
+    test('should return account on succeeds', async () => { 
+      const { sut } = makeSut()
+      const response =   await sut.add(makeFakeAddAccount())
+      expect(response).toEqual(makeFakeAccount())
+    })
  })
