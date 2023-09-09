@@ -38,4 +38,15 @@ describe('AccountMongoRepository', () => {
   expect(account?.password).toEqual('any_password')
   expect(account?.id).toBeTruthy()
   })
+
+  test('should return account if loadAccount success', async () => {
+    const {privateKey, passwordConfirmation,...rest} = makeFakeAddAccount()
+    await accountsCollection.insertOne({...rest})
+    const sut = makeSut()
+    const account = await sut.loadByEmail('any_email@mail.com')
+    expect(account?.email).toEqual('any_email@mail.com')
+    expect(account?.username).toEqual('any_username')
+    expect(account?.password).toEqual('any_password')
+    expect(account?.id).toBeTruthy()
+  })
 })
