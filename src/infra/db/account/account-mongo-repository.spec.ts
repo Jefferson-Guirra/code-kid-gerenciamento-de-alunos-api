@@ -49,4 +49,11 @@ describe('AccountMongoRepository', () => {
     expect(account?.password).toEqual('any_password')
     expect(account?.id).toBeTruthy()
   })
+
+  test('should return null if loadAccount fails', async () => {
+    const sut = makeSut()
+    const account = await sut.loadByEmail('any_email@mail.com')
+    expect(account).toBeFalsy()
+
+  })
 })
