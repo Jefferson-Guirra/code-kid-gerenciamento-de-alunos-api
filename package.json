@@ -21,5 +21,8 @@
     "test:ci": "npm test -- --coverage",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.0.0"
   }
 }
