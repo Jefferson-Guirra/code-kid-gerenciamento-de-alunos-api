@@ -23,6 +23,7 @@
     "test:integration": "npm test -- --watch -c jest-integration-config.js"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "mongodb": "^5.8.1"
   }
 }
