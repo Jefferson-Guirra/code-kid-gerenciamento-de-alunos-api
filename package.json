@@ -27,6 +27,7 @@
     "test:integration": "npm test -- --watch -c jest-integration-config.js"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "mongodb": "^5.8.1",
     "sucrase": "^3.34.0"
