@@ -139,8 +139,13 @@ describe('DbAddAccountRepository', () => {
   test('should call AddAccount with correct values', async () => { 
     const { sut, addAccountStub } = makeSut()
     const addSpy = jest.spyOn(addAccountStub, 'addAccount')
+    const {password, passwordConfirmation, ...rest} = makeFakeAddAccount()
     await sut.add(makeFakeAddAccount())
-    expect(addSpy).toHaveBeenCalledWith(makeFakeAddAccount())
+    expect(addSpy).toHaveBeenCalledWith({
+      password: 'hashed_password',
+      passwordConfirmation: 'hashed_password',
+      ...rest
+    })
   })
 
   test('should return throw if AddAccount fails', async () => { 
