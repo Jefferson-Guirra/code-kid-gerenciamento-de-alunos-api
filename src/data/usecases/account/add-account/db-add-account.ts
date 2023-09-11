@@ -22,7 +22,13 @@ export class DbAddAccountRepository implements AddAccount {
     if(!validate) {
       return null
     }
-    await this.hasher.hash(password)
-    return await this.account.addAccount({ username, email, password, privateKey, passwordConfirmation})
+    const hashedPassword = await this.hasher.hash(password)
+    return await this.account.addAccount({ 
+      username, 
+      email, 
+      password: hashedPassword, 
+      privateKey, 
+      passwordConfirmation: hashedPassword
+    })
   }
 }
