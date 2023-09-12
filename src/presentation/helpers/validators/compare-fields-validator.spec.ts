@@ -21,7 +21,7 @@ describe('CompareFields', () => {
     expect(response).toBeFalsy()
   })
 
-  test('should return  on succeeds', () => {
+  test('should return  InvalidParamError if validation fails', () => {
     const sut = makeSut()
     const response = sut.validation(makeFakeRequest('random_value'))
     expect(response).toEqual(new InvalidParamsError('fieldToCompare'))
