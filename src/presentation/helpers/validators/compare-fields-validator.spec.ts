@@ -1,6 +1,6 @@
 import { InvalidParamsError } from '../../errors/invalid-params-error'
 import { HttpRequest } from '../../protocols/http'
-import { CompareFields } from './compare-fields-validator'
+import { CompareFieldsValidator } from './compare-fields-validator'
 
 const makeFakeRequest = (value?: string):HttpRequest => {
   const body ={
@@ -13,8 +13,8 @@ const makeFakeRequest = (value?: string):HttpRequest => {
   
 
 }
-const makeSut= (): CompareFields => new CompareFields('field', 'fieldToCompare')
-describe('CompareFields', () => { 
+const makeSut= (): CompareFieldsValidator => new CompareFieldsValidator('field', 'fieldToCompare')
+describe('CompareFieldsValidator', () => { 
   test('should return undefined on succeeds', () => {
     const sut = makeSut()
     const response = sut.validation(makeFakeRequest())
