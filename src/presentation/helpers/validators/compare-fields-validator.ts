@@ -10,7 +10,7 @@ export class CompareFields implements Validation {
   validation(httpRequest: HttpRequest): Error | undefined {
     const  body = httpRequest.body
     if(body[this.field] !== body[this.compareFields]){
-      return new InvalidParamsError(this.field)
+      return new InvalidParamsError(this.compareFields)
     }
   }
 }
