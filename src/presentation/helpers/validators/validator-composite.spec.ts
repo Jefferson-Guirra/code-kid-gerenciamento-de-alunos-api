@@ -46,4 +46,10 @@ describe('ValidatorComposite', () => {
     expect(secondValidatorSpy).toHaveBeenCalledWith(makeFakeRequest())
    })
 
+   test('should return a error if validation fails', () => { 
+    const { validatorsStub, sut} = makeSut()
+    jest.spyOn(validatorsStub[1], 'validation').mockReturnValueOnce(new MissingParamsError('field'))
+    const response = sut.validation(makeFakeRequest())
+    expect(response).toEqual(new MissingParamsError('field'))
+   })
 })
