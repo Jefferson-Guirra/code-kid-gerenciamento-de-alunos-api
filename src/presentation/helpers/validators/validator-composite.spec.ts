@@ -52,4 +52,10 @@ describe('ValidatorComposite', () => {
     const response = sut.validation(makeFakeRequest())
     expect(response).toEqual(new MissingParamsError('field'))
    })
+
+   test('should return undefined on succeeds', () => { 
+    const { sut } = makeSut()
+    const response =  sut.validation(makeFakeRequest())
+    expect(response).toBeFalsy()
+    })
 })
