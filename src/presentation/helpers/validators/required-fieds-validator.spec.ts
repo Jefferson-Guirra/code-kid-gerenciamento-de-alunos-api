@@ -15,6 +15,13 @@ describe('RequiredFieldsValidator', () => {
     const sut = makeSut()
     const response = sut.validation(makeFakeRequest())
     expect(response).toEqual(new InvalidParamsError('email'))
+  })
 
+  test('should  return MissingParamsError if validations fails', () => {
+    const sut = makeSut()
+    const request = makeFakeRequest()
+    request.body.email = 'any_email@mail.com'
+    const response = sut.validation(request)
+    expect(response).toBeFalsy()
   })
 })
