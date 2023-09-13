@@ -53,4 +53,11 @@ describe('EmailValidation', () => {
     expect(sut.validation).toThrow()
    })
 
+   test('should return throw if EmailValidator fails', () => { 
+    const { sut, emailValidatorStub } = makeSut()
+    const response =   sut.validation(makeFakeRequest())
+    expect(response).toBeFalsy()
+   })
+
+
 })
