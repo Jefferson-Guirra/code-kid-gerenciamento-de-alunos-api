@@ -1,3 +1,4 @@
+import { InvalidParamsError } from '../../errors/invalid-params-error'
 import { EmailValidator } from '../../protocols/email-validator'
 import { HttpRequest } from '../../protocols/http'
 import { EmailValidation } from './email-validator'
@@ -37,7 +38,13 @@ describe('EmailValidation', () => {
     const validatorSpy = jest.spyOn(emailValidatorStub, 'isValid')
     sut.validation(makeFakeRequest())
     expect(validatorSpy).toBeCalledWith('any_email@mail.com')
-
   })
+
+  test('should return invalidParams error if EmailValidator return false', () => { 
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+    const response = sut.validation(makeFakeRequest())
+    expect(response).toEqual(new InvalidParamsError('email'))
+   })
 
 })
