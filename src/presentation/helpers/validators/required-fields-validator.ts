@@ -4,14 +4,11 @@ import { HttpRequest } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
 
 export class RequiredFieldsValidator implements  Validation {
-  constructor(private readonly params: string[]) {}
+  constructor(private readonly field: string) {}
 
   validation(httpRequest: HttpRequest): Error | undefined {
-    for(const field of this.params) {
-      if(!httpRequest.body.hasOwnProperty(field)){
-        return new InvalidParamsError(field)
-      }
-
+    if(!httpRequest.body.hasOwnProperty(this.field)){
+      return new InvalidParamsError(this.field)
     }
     return undefined
   }

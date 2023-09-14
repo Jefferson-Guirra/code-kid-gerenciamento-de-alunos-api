@@ -9,7 +9,7 @@ const makeFakeRequest  = (): HttpRequest => ({
   }
 })
 
-const makeSut = () => new RequiredFieldsValidator([ 'username', 'email', 'password'])
+const makeSut = () => new RequiredFieldsValidator('email')
 describe('RequiredFieldsValidator', () => { 
   test('should  return MissingParamsError if validations fails', () => {
     const sut = makeSut()
