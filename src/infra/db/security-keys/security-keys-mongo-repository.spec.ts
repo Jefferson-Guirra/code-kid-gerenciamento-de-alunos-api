@@ -52,6 +52,20 @@ describe('SecurityKeysMongoRepository', () => {
     const hashSpy = jest.spyOn(hashCompareStub, 'compare')
     await sut.validateAddKey('any_key')
     expect(hashSpy).toHaveBeenCalledWith('any_key', 'any_key')
-    
+  })
+
+  test('should return false if HashCompare return false', async () => {
+    const { sut, hashCompareStub } = makeSut()
+    await addKey('any_key')
+    jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.resolve(false))
+    const response  = await sut.validateAddKey('any_key')
+    expect(response).toBeFalsy()
+  })
+
+  test('should return true if HashCompare on succeeds', async () => {
+    const { sut } = makeSut()
+    await addKey('any_key')
+    const response  = await sut.validateAddKey('any_key')
+    expect(response).toBeTruthy()
   })
 })
