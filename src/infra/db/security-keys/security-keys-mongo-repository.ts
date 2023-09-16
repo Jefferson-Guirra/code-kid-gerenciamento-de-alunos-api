@@ -7,6 +7,7 @@ export class SecurityKeysMongoRepository implements ValidateAddAccountKeyReposit
    async validateAddKey(key: string): Promise<boolean> {
     const keysCollection = await MongoHelper.getCollection('security-keys')
     const keys: any = await keysCollection.findOne({ name: 'codigo-kid-campo-formoso'})
-    return this.hashCompare.compare(key, keys.createAccountKey)
+    const validateKey = await this.hashCompare.compare(key, keys.createAccountKey)
+    return validateKey
    }
 }
