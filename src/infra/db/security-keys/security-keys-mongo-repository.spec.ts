@@ -68,4 +68,12 @@ describe('SecurityKeysMongoRepository', () => {
     const response  = await sut.validateAddKey('any_key')
     expect(response).toBeTruthy()
   })
+
+  test('should return throw if HashCompare fails', async () => { 
+    const { sut, hashCompareStub } = makeSut()
+    await addKey('any_key')
+    jest.spyOn(hashCompareStub, 'compare').mockImplementation(() => Promise.reject(new Error()))
+    const promise = sut.validateAddKey('any_key')
+    await expect(promise).rejects.toThrow()
+   })
 })
