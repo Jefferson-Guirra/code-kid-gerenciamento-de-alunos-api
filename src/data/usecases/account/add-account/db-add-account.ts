@@ -8,17 +8,17 @@ import { ValidateAddAccountKeyRepository } from '../../../protocols/db/keys/vali
 export class DbAddAccountRepository implements AddAccount {
   constructor(
     private readonly loadAccount: LoadAccountByEmailRepository,
-    private readonly validateKey: ValidateAddAccountKeyRepository,
+    private readonly key: ValidateAddAccountKeyRepository,
     private readonly account: AddAccountRepository,
     private readonly hasher : Hasher
     ) {}
   async add (account: AddAccountModel): Promise<AccountModel | null> {
     const { email, privateKey, username, password, passwordConfirmation } = account
     const loadAccount = await this.loadAccount.loadByEmail(email)
-    if(!loadAccount) {
+    if(loadAccount) {
       return null
     }
-    const validate = await this.validateKey.validateAddKey(privateKey)
+    const validate = await this.key.validateAddKey(privateKey)
     if(!validate) {
       return null
     }
