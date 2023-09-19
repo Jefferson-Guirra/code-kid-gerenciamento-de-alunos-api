@@ -6,3 +6,4 @@ const setupRoutes = (app: Express) => {
   app.use('/api', router)
   FastGlob.sync('**/src/main/routes/**routes.ts').map(async file =>(await import(`../../../${file}`)).default(router))
 }
+export default setupRoutes
