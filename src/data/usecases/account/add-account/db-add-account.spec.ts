@@ -36,10 +36,11 @@ const makeFakeValidateAddAccountKeyStub = (): ValidateAddAccountKeyRepository =>
   }
   return new ValidateAddAccountKeyRepositoryStub()
 }
+
 const makeLoadAccountByEmailStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
     async loadByEmail (email: string): Promise<AccountModel | null> {
-      return await Promise.resolve(makeFakeAccount())
+      return await Promise.resolve(null)
     }
   }
   return new LoadAccountByEmailRepositoryStub()
@@ -89,7 +90,7 @@ describe('DbAddAccountRepository', () => {
 
   test('should return null if LoadAccount return account', async () => { 
   const { sut, loadAccountByEmailStub } = makeSut()
-  jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
+  jest.spyOn(loadAccountByEmailStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(makeFakeAccount()))
   const response = await sut.add(makeFakeAddAccount())
   expect(response).toBeFalsy()
   })
