@@ -53,4 +53,9 @@ describe('POST /signup', () => {
     const account = fakeAddAccount()
     await request(app).post('/api/signup').send(account).expect(401)
    })
+  test('should return 200 on succeeds', async () => { 
+    await dbInsertKey()
+    const account = fakeAddAccount()
+    await request(app).post('/api/signup').send(account).expect(200)
+  })
 })
