@@ -11,6 +11,7 @@ const makeFakeAddAccount = (): AddAccountModel => ({
   password: 'any_password',
   passwordConfirmation: 'any_password',
   privateKey: 'any_key',
+  units: [ 'any_unity']
 })
 
 const makeSut = (): AccountMongoRepository =>  new AccountMongoRepository()

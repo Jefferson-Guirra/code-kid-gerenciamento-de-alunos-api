@@ -30,7 +30,8 @@ const fakeAddAccount = (): AddAccountModel => {
   email: 'any_email@mail.com',
   password: 'any_password',
   passwordConfirmation: 'any_password',
-  privateKey: 'any_key'
+  privateKey: 'any_key',
+  units: [ 'any_units']
   }
   return account
 }

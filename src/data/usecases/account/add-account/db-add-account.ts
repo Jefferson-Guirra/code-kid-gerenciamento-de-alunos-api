@@ -13,7 +13,7 @@ export class DbAddAccountRepository implements AddAccount {
     private readonly hasher : Hasher
     ) {}
   async add (account: AddAccountModel): Promise<AccountModel | null> {
-    const { email, privateKey, username, password, passwordConfirmation } = account
+    const { email, privateKey, username, password, passwordConfirmation, units } = account
     const loadAccount = await this.loadAccount.loadByEmail(email)
     if(loadAccount) {
       return null
@@ -28,7 +28,8 @@ export class DbAddAccountRepository implements AddAccount {
       email, 
       password: hashedPassword, 
       privateKey, 
-      passwordConfirmation: hashedPassword
+      passwordConfirmation: hashedPassword,
+      units
     })
   }
 }

@@ -12,6 +12,7 @@ const makeFakeAddAccount = (): AddAccountModel => ({
   password: 'string',
   passwordConfirmation: 'any_password',
   privateKey: 'any_key',
+  units: ['any_units']
 
 })
 
