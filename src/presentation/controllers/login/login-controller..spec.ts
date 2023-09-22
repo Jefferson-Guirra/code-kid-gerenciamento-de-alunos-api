@@ -1,3 +1,4 @@
+import { HashCompare } from '../../../data/protocols/criptography/hash-compare'
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository'
 import { AccountModel } from '../../../domain/models/account'
 import { serverError, unauthorized } from '../../helpers/http/http'
@@ -18,6 +19,14 @@ const makeFakeAccountModel = (): AccountModel => ({
   password: 'any_password'
 })
 
+const makeHashCompareStub = (): HashCompare => {
+  class HashCompareStub implements HashCompare {
+    async compare (value: string, compareValue: string): Promise<boolean> {
+      return await Promise.resolve(true)
+    }
+  }
+  return new HashCompareStub()
+}
 const makeLoadAccountStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositorySub implements LoadAccountByEmailRepository  {
     async loadByEmail(email: string): Promise<AccountModel | null> {
@@ -27,16 +36,19 @@ const makeLoadAccountStub = (): LoadAccountByEmailRepository => {
   return new LoadAccountByEmailRepositorySub()
 }
 interface SutTypes {
-  loadAccountStub: LoadAccountByEmailRepository
   sut: LoginController
+  loadAccountStub: LoadAccountByEmailRepository,
+  hashCompareStub: HashCompare
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountStub = makeLoadAccountStub()
-  const sut = new LoginController(loadAccountStub)
+  const hashCompareStub = makeHashCompareStub()
+  const sut = new LoginController(loadAccountStub, hashCompareStub)
   return {
     sut,
-    loadAccountStub
+    loadAccountStub,
+    hashCompareStub
   }
 
 }
@@ -48,17 +60,25 @@ describe('LoginController', () => {
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
+
   test('should return 401 if loadAccount return null', async () => { 
     const { sut, loadAccountStub } = makeSut() 
     jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(unauthorized())
   })
+
   test('should return throw if loadAccount return throw', async () => { 
      const { sut, loadAccountStub }  = makeSut()
      jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.reject( new Error('')))
      const response = await sut.handle(makeFakeRequest())
      expect(response).toEqual(serverError(new Error('')))
-     
   })
+
+  test('should call hashCompare with correct values', async() => { 
+    const { sut, hashCompareStub } = makeSut()
+    const hashSpy = jest.spyOn(hashCompareStub, 'compare')
+    await sut.handle(makeFakeRequest())
+    expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
+   })
 })
