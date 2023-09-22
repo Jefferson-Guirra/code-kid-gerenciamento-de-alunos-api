@@ -81,4 +81,10 @@ describe('LoginController', () => {
     await sut.handle(makeFakeRequest())
     expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
    })
+   test('should return 401  if HashCompare return false', async () => {  
+    const { sut, hashCompareStub }  = makeSut()
+    jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.resolve(false))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
+   })
 })
