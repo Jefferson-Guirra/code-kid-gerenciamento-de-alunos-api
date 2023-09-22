@@ -1,5 +1,6 @@
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository'
 import { AccountModel } from '../../../domain/models/account'
+import { unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { LoginController } from './login-controller'
 
@@ -41,11 +42,16 @@ const makeSut = (): SutTypes => {
 }
 
 describe('LoginController', () => { 
-  test('should call LOadAccount with correct values', async () => { 
+  test('should call LoadAccount with correct values', async () => { 
     const { sut, loadAccountStub } = makeSut()
     const loadSpy = jest.spyOn(loadAccountStub, 'loadByEmail')
     await sut.handle(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
-  
+  })
+  test('should return 401 if loadAccount return null', async () => { 
+    const { sut, loadAccountStub } = makeSut() 
+    jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 })
