@@ -18,6 +18,9 @@ export class LoginController  implements Controller {
         return unauthorized()
       }
       const isValid = await this.hashCompare.compare(password, account.password)
+      if(!isValid) {
+        return unauthorized()
+      }
     } catch(err) {
       return serverError(err as Error)
     }
