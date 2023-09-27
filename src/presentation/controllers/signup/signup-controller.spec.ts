@@ -1,5 +1,5 @@
 import { AccountModel } from '../../../domain/models/account'
-import { AddAccount, AddAccountModel } from '../../../domain/usecases/add-account'
+import { AddAccount, AddAccountModel } from '../../../domain/usecases/account/add-account'
 import { MissingParamsError } from '../../errors/missing-params-error'
 import { badRequest, serverError, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'

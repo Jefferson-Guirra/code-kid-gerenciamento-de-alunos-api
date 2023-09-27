@@ -1,6 +1,6 @@
 import  request from 'supertest'
 import bcrypt from 'bcrypt'
-import { AddAccountModel } from '../../domain/usecases/add-account'
+import { AddAccountModel } from '../../domain/usecases/account/add-account'
 import app from '../config/app'
 import { MongoHelper } from '../../infra/db/helpers/mongo-helper'
 import { Collection } from 'mongodb'
