@@ -2,7 +2,7 @@ import { Encrypter } from '../../../data/protocols/criptography/encrypter'
 import { HashCompare } from '../../../data/protocols/criptography/hash-compare'
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository'
 import { AccountModel } from '../../../domain/models/account'
-import { serverError, unauthorized } from '../../helpers/http/http'
+import { ok, serverError, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { LoginController } from './login-controller'
 
@@ -92,14 +92,14 @@ describe('LoginController', () => {
     const hashSpy = jest.spyOn(hashCompareStub, 'compare')
     await sut.handle(makeFakeRequest())
     expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
-   })
+  })
 
-   test('should return 401  if HashCompare return false', async () => {  
+  test('should return 401  if HashCompare return false', async () => {  
     const { sut, hashCompareStub }  = makeSut()
     jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.resolve(false))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(unauthorized())
-   })
+  })
 
 
   test('should return 500 if HashCompare fails', async () => { 
@@ -107,19 +107,25 @@ describe('LoginController', () => {
     jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.reject( new Error('')))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error('')))
- })
+  })
 
-   test('should call Encrypter with correct values', async() => { 
+  test('should call Encrypter with correct values', async() => { 
     const { sut, encrypterStub } = makeSut()
     const hashSpy = jest.spyOn(encrypterStub, 'encrypt')
     await sut.handle(makeFakeRequest())
     expect(hashSpy).toHaveBeenCalledWith('any_id')
-   })
+  })
 
-   test('should return 500 if Encrypter fails', async () => { 
+  test('should return 500 if Encrypter fails', async () => { 
     const { sut, encrypterStub }  = makeSut()
     jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(Promise.reject( new Error('')))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error('')))
- })
+  })
+
+  test('should return 200 on succeeds', async () => {
+    const  { sut } = makeSut() 
+    const response =  await  sut.handle(makeFakeRequest())
+    expect(response).toEqual(ok({ accessToken: 'encrypt_value', username: 'any_username'}))
+  })
 })
