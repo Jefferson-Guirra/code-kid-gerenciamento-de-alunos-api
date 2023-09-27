@@ -1,3 +1,4 @@
+import { Encrypter } from '../../../data/protocols/criptography/encrypter'
 import { HashCompare } from '../../../data/protocols/criptography/hash-compare'
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository'
 import { AccountModel } from '../../../domain/models/account'
@@ -19,6 +20,14 @@ const makeFakeAccountModel = (): AccountModel => ({
   password: 'any_password'
 })
 
+const makeEncrypterStub = (): Encrypter => {
+  class EncrypterStub implements Encrypter {
+    async encrypt (value: string): Promise<string> {
+      return await Promise.resolve('encrypt_value')
+    }
+  }
+  return new EncrypterStub()
+}
 const makeHashCompareStub = (): HashCompare => {
   class HashCompareStub implements HashCompare {
     async compare (value: string, compareValue: string): Promise<boolean> {
@@ -38,17 +47,20 @@ const makeLoadAccountStub = (): LoadAccountByEmailRepository => {
 interface SutTypes {
   sut: LoginController
   loadAccountStub: LoadAccountByEmailRepository,
-  hashCompareStub: HashCompare
+  hashCompareStub: HashCompare,
+  encrypterStub: Encrypter
 }
 
 const makeSut = (): SutTypes => {
+  const encrypterStub = makeEncrypterStub()
   const loadAccountStub = makeLoadAccountStub()
   const hashCompareStub = makeHashCompareStub()
-  const sut = new LoginController(loadAccountStub, hashCompareStub)
+  const sut = new LoginController(loadAccountStub, hashCompareStub, encrypterStub)
   return {
     sut,
     loadAccountStub,
-    hashCompareStub
+    hashCompareStub,
+    encrypterStub
   }
 
 }
@@ -81,10 +93,18 @@ describe('LoginController', () => {
     await sut.handle(makeFakeRequest())
     expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
    })
+
    test('should return 401  if HashCompare return false', async () => {  
     const { sut, hashCompareStub }  = makeSut()
     jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.resolve(false))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(unauthorized())
+   })
+
+   test('should call Encrypter with correct values', async() => { 
+    const { sut, encrypterStub } = makeSut()
+    const hashSpy = jest.spyOn(encrypterStub, 'encrypt')
+    await sut.handle(makeFakeRequest())
+    expect(hashSpy).toHaveBeenCalledWith('any_id')
    })
 })
