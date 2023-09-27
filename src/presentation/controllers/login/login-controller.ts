@@ -23,10 +23,15 @@ export class LoginController  implements Controller {
       if(!isValid) {
         return unauthorized()
       }
-      await this.encrypter.encrypt(account.id)
+      const accessToken = await this.encrypter.encrypt(account.id)
+      return ok({
+        accessToken,
+        username: account.username
+
+      })
+
     } catch(err) {
       return serverError(err as Error)
     }
-    return ok('success')
   }
 }
