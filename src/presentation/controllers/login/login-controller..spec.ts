@@ -48,4 +48,11 @@ describe('LoginController', () => {
     await sut.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
    })
+
+   test('should return 401 if authentication return null', async () => { 
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
+   })
 })
