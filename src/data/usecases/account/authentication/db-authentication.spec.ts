@@ -121,6 +121,7 @@ describe('DbAuthentication', () => {
 */
 
 import { AccountModel } from '../../../../domain/models/account'
+import { HashCompare } from '../../../protocols/criptography/hash-compare'
 import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load-account-by-email-repository'
 import { DbAuthentication } from './db-autehntication'
 
@@ -130,6 +131,15 @@ const makeFakeAccountModel = (): AccountModel => ({
   email: 'any_email@mail.com',
   password: 'any_password'
 })
+
+const makeHashCompareStub = (): HashCompare => {
+  class HashCompareStub implements HashCompare {
+    async compare (value: string, compareValue: string): Promise<boolean> {
+      return await Promise.resolve(true)
+    }
+  }
+  return new HashCompareStub()
+}
 
 const makeLoadAccountStub = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositorySub implements LoadAccountByEmailRepository  {
@@ -143,16 +153,19 @@ const makeLoadAccountStub = (): LoadAccountByEmailRepository => {
 interface SutTypes {
   sut: DbAuthentication
   loadAccountStub: LoadAccountByEmailRepository,
+  hashCompareStub: HashCompare,
 }
 
 
 const makeSut = (): SutTypes => {
   const loadAccountStub = makeLoadAccountStub()
-  const sut = new DbAuthentication(loadAccountStub)
+  const hashCompareStub = makeHashCompareStub()
+  const sut = new DbAuthentication(loadAccountStub, hashCompareStub)
 
   return {
     sut,
     loadAccountStub,
+    hashCompareStub
   }
 
 }
@@ -177,5 +190,12 @@ describe('first', () => {
     jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.reject( new Error('')))
     const response = sut.auth('any_email@mail.com', 'any_password')
     await expect(response).rejects.toThrow()
+  })
+
+  test('should call hashCompare with correct values', async() => { 
+    const { sut, hashCompareStub } = makeSut()
+    const hashSpy = jest.spyOn(hashCompareStub, 'compare')
+    await sut.auth('any_email@mail.com', 'any_password')
+    expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
   })
  })
