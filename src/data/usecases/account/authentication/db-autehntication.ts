@@ -7,6 +7,7 @@ export class DbAuthentication implements Authentication {
   constructor(  
     private readonly loadAccount: LoadAccountByEmailRepository,
     private readonly hashCompare: HashCompare,
+    private readonly enccrypter: Encrypter
     
     ) {}
   async auth (email: string, password: string): Promise<AuthenticationModel | null> {
@@ -18,6 +19,7 @@ export class DbAuthentication implements Authentication {
     if(!isValid) {
       return null
     }
+    const accessToken = await this.enccrypter.encrypt(account.id)
 
   return { 
     username: 'any_username',
