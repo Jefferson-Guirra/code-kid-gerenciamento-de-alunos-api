@@ -205,4 +205,11 @@ describe('first', () => {
     const response = await sut.auth('any_email@mail.com', 'any_password')
     expect(response).toBeFalsy()
   })
+
+  test('should return 500 if HashCompare fails', async () => { 
+    const { sut, hashCompareStub }  = makeSut()
+    jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.reject( new Error('')))
+    const promise =  sut.auth('any_email@mail.com', 'any_password')
+    await expect(promise).rejects.toThrow()
+  })
  })
