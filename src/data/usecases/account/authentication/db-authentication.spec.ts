@@ -198,4 +198,11 @@ describe('first', () => {
     await sut.auth('any_email@mail.com', 'any_password')
     expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_password')
   })
+
+  test('should return null  if HashCompare return false', async () => {  
+    const { sut, hashCompareStub }  = makeSut()
+    jest.spyOn(hashCompareStub, 'compare').mockReturnValueOnce(Promise.resolve(false))
+    const response = await sut.auth('any_email@mail.com', 'any_password')
+    expect(response).toBeFalsy()
+  })
  })
