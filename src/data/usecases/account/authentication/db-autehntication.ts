@@ -21,10 +21,11 @@ export class DbAuthentication implements Authentication {
     }
     const accessToken = await this.enccrypter.encrypt(account.id)
 
-  return { 
-    username: 'any_username',
-    email: 'any_email@mail.com',
-    accessToken: 'any_token'
+  return {
+    email: account.email,
+    username: account.username,
+    accessToken
+
   }
   }
 }
