@@ -6,14 +6,15 @@ import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load
 export class DbAuthentication implements Authentication {
   constructor(  
     private readonly loadAccount: LoadAccountByEmailRepository,
-
+    private readonly hashCompare: HashCompare,
+    
     ) {}
   async auth (email: string, password: string): Promise<AuthenticationModel | null> {
     const account = await this.loadAccount.loadByEmail(email)
     if(!account) {
       return null
     }
-
+    await this.hashCompare.compare(password, account.password)
 
   return { 
     username: 'any_username',
