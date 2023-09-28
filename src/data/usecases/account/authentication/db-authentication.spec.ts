@@ -171,4 +171,11 @@ describe('first', () => {
     const response = await sut.auth('any_email@mail.com', 'any_password')
     expect(response).toBeFalsy()
   })
+
+  test('should return throw if loadAccount return throw', async () => { 
+    const { sut, loadAccountStub }  = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.reject( new Error('')))
+    const response = sut.auth('any_email@mail.com', 'any_password')
+    await expect(response).rejects.toThrow()
+  })
  })
