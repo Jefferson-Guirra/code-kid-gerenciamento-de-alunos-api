@@ -232,4 +232,11 @@ describe('first', () => {
     await sut.auth('any_email@mail.com', 'any_password')
     expect(hashSpy).toHaveBeenCalledWith('any_id')
   })
+
+  test('should return throw if Encrypter fails', async () => { 
+    const { sut, encrypterStub }  = makeSut()
+    jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(Promise.reject( new Error('')))
+    const promise = sut.auth('any_email@mail.com', 'any_password')
+    expect(promise).rejects.toThrow()
+  })
  })
