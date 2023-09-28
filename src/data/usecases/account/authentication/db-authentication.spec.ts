@@ -164,4 +164,11 @@ describe('first', () => {
     await sut.auth('any_email@mail.com', 'any_password')
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
+
+  test('should return null if loadAccount return null', async () => { 
+    const { sut, loadAccountStub } = makeSut() 
+    jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.auth('any_email@mail.com', 'any_password')
+    expect(response).toBeFalsy()
+  })
  })
