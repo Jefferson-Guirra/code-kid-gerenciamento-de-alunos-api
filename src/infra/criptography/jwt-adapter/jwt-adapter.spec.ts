@@ -24,4 +24,10 @@ describe('JwtAdapter', () => {
     await expect(promise).rejects.toThrow()
   })
 
+  test('should return Encrypted value on succeeds', async () => { 
+    const sut = makeSut()
+    const response =  await sut.encrypt('any_value')
+    expect(response).toEqual('encrypt_value')
+  })
+
 })
