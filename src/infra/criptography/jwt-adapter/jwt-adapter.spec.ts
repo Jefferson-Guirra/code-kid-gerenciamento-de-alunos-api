@@ -13,7 +13,15 @@ describe('JwtAdapter', () => {
     const encryptSpy = jest.spyOn(jwt, 'sign')
     await sut.encrypt('any_value')
     expect(encryptSpy).toBeCalledWith({ id: 'any_value'}, 'any_secret_key')
+  })
 
+  test('should return throw if jsonWebToken fails', async () => {  
+    const sut = makeSut()
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
+      throw new Error('')
+    })
+    const promise =  sut.encrypt('any_value')
+    await expect(promise).rejects.toThrow()
   })
 
 })
