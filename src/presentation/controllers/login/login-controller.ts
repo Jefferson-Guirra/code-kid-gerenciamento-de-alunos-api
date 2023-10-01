@@ -2,7 +2,7 @@ import { Encrypter } from '../../../data/protocols/criptography/encrypter';
 import { HashCompare } from '../../../data/protocols/criptography/hash-compare';
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository';
 import { Authentication } from '../../../domain/usecases/account/authentication';
-import { ok, serverError, unauthorized } from '../../helpers/http/http';
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http';
 import { Controller } from '../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
@@ -15,7 +15,10 @@ export class LoginController  implements Controller {
   ){}
 
   async handle (request: HttpRequest): Promise<HttpResponse>{
-    this.validation.validation(request)
+    const error = this.validation.validation(request)
+    if(error) {
+      return badRequest(error)
+    }
     try{
       const { email, password } = request.body
       const account =  await this.authentication.auth(email, password)
