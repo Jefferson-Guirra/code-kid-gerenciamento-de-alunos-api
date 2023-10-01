@@ -2,7 +2,7 @@ import { AccountModel } from '../../../../domain/models/account'
 import { Encrypter } from '../../../protocols/criptography/encrypter'
 import { HashCompare } from '../../../protocols/criptography/hash-compare'
 import { LoadAccountByEmailRepository } from '../../../protocols/db/account/load-account-by-email-repository'
-import { DbAuthentication } from './db-autehntication'
+import { DbAuthentication } from './db-authentication'
 
 const makeFakeAccountModel = (): AccountModel => ({
   id: 'any_id',
