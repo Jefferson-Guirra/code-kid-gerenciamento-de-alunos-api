@@ -5,6 +5,7 @@ import app from '../config/app'
 import { MongoHelper } from '../../infra/db/helpers/mongo-helper'
 import { Collection } from 'mongodb'
 import { HttpRequest } from '../../presentation/protocols/http'
+import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
 
 let keysCollection: Collection
 let accountsCollection: Collection
@@ -79,6 +80,22 @@ describe('POST /LOGIN', () => {
       password: 'any_password'
     }
     await request(app).post('/api/login').send(makeLoginAccountModel).expect(401)
+  })
+
+  test('should return 200 on succeeds', async () => { 
+    const bcryptAdapter = new BcryptAdapter(12)
+    const password = await bcryptAdapter.hash('any_password')
+    await accountsCollection.insertOne({
+      username: 'any_username',
+      email: 'any_email@mail.com',
+      password,
+      privateKey: 'any_key'
+    })
+    const makeLoginAccountModel  = {
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    }
+    await request(app).post('/api/login').send(makeLoginAccountModel).expect(200)
   })
 
 })
