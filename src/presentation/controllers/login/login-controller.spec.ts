@@ -2,6 +2,7 @@ import { AccountModel } from '../../../domain/models/account'
 import { Authentication, AuthenticationModel } from '../../../domain/usecases/account/authentication'
 import { ok, serverError, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
+import { Validation } from '../../protocols/validation'
 import { LoginController } from './login-controller'
 
 const makeFakeRequest= (): HttpRequest => ({
@@ -17,6 +18,14 @@ const makeFakeAuthenticationModel = (): AuthenticationModel => ({
   accessToken: 'any_token'
 })
 
+const makeValidatorStub = (): Validation => {
+  class ValidatorStub implements Validation{
+    validation(httpRequest: HttpRequest): Error | undefined {
+      return
+    }
+  }
+  return new ValidatorStub()
+}
 const makeAuthenticationStub = (): Authentication => {
   class DbAuthenticationStub implements Authentication {
     async auth (email: string, password: string): Promise<AuthenticationModel | null> {
@@ -28,20 +37,30 @@ const makeAuthenticationStub = (): Authentication => {
 
 interface SutTypes {
   sut: LoginController
+  validatorStub: Validation
   authenticationStub: Authentication
 }
 
 const makeSut = (): SutTypes => {
+  const validatorStub = makeValidatorStub()
   const authenticationStub = makeAuthenticationStub()
-  const sut = new LoginController(authenticationStub)
+  const sut = new LoginController(validatorStub, authenticationStub)
   return {
     sut,
+    validatorStub,
     authenticationStub
   }
 
 }
 
 describe('LoginController', () => { 
+  test('should call Validation with correct value', async () => { 
+     const { sut, validatorStub } = makeSut()
+     const validatorSpy = jest.spyOn(validatorStub, 'validation')
+     await sut.handle(makeFakeRequest())
+     expect(validatorSpy).toHaveBeenCalledWith(makeFakeRequest())
+  })
+
   test('should call authentication with correct values', async () => { 
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
