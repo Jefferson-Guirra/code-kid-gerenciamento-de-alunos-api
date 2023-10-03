@@ -1,5 +1,5 @@
 import { AccountLogout } from '../../../domain/usecases/account/logout-account';
-import { badRequest, ok } from '../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../helpers/http/http';
 import { Controller } from '../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
@@ -15,7 +15,10 @@ export class LogoutController implements Controller {
       return badRequest(error)
     }
     const { accessToken } = request.body
-    await this.accountLogout.logout(accessToken)
+    const logout = await this.accountLogout.logout(accessToken)
+    if(!logout){
+      return unauthorized()
+    }
      return ok(' success')
   }
 }
