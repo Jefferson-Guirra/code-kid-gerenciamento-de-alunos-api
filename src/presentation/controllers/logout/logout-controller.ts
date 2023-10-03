@@ -20,7 +20,7 @@ export class LogoutController implements Controller {
       if(!logout){
         return unauthorized()
       }
-       return ok(' success')
+       return ok({ message: 'logout success'})
     }catch(err) {
       return serverError(err as Error)
     }
