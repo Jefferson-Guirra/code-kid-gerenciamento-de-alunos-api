@@ -1,6 +1,6 @@
 import { AccountLogout } from '../../../domain/usecases/account/logout-account';
 import { MissingParamsError } from '../../errors/missing-params-error';
-import { badRequest } from '../../helpers/http/http';
+import { badRequest, unauthorized } from '../../helpers/http/http';
 import { HttpRequest } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
 import { LogoutController } from './logout-controller';
@@ -66,6 +66,13 @@ describe('LogoutController', () => {
     const logoutSpy = jest.spyOn(DbAccountLogout, 'logout')
     await sut.handle(makeFakeRequest())
     expect(logoutSpy).toHaveBeenCalledWith('any_token')
+  })
+
+  test('should return 401 if AccountLogout return undefined', async () => { 
+    const { sut, DbAccountLogout } = makeSut()
+    jest.spyOn(DbAccountLogout, 'logout').mockReturnValueOnce(Promise.resolve(undefined))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 
 })
