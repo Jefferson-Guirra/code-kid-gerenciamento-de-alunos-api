@@ -1,3 +1,4 @@
+import { AccountLogout } from '../../../domain/usecases/account/logout-account';
 import { MissingParamsError } from '../../errors/missing-params-error';
 import { badRequest } from '../../helpers/http/http';
 import { HttpRequest } from '../../protocols/http';
@@ -19,17 +20,29 @@ const makeValidationStub = (): Validation => {
   return new ValidationStub()
 }
 
+const makeDbAccountLogout = (): AccountLogout => {
+  class DbAccountLogoutStub implements AccountLogout {
+    async logout (accessToken: string): Promise<string | undefined> {
+      return await Promise.resolve('logout_success')
+    }
+  }
+  return new DbAccountLogoutStub()
+}
+
 interface SutTypes {
   sut: LogoutController,
   validationStub: Validation
+  DbAccountLogout: AccountLogout
 }
 
 const makeSut = (): SutTypes => {
   const validationStub = makeValidationStub()
-  const sut = new LogoutController(validationStub)
+  const DbAccountLogout = makeDbAccountLogout()
+  const sut = new LogoutController(validationStub, DbAccountLogout)
   return {
     sut,
-    validationStub
+    validationStub,
+    DbAccountLogout
   }
 }
 
@@ -46,6 +59,13 @@ describe('LogoutController', () => {
     jest.spyOn(validationStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
+  })
+
+  test('should call AccountLogout with correct value', async () => { 
+    const { sut, DbAccountLogout } = makeSut()
+    const logoutSpy = jest.spyOn(DbAccountLogout, 'logout')
+    await sut.handle(makeFakeRequest())
+    expect(logoutSpy).toHaveBeenCalledWith('any_token')
   })
 
 })
