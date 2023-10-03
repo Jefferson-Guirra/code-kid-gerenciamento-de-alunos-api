@@ -1,6 +1,6 @@
 import { AccountLogout } from '../../../domain/usecases/account/logout-account';
 import { MissingParamsError } from '../../errors/missing-params-error';
-import { badRequest, serverError, unauthorized } from '../../helpers/http/http';
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http';
 import { HttpRequest } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
 import { LogoutController } from './logout-controller';
@@ -80,6 +80,12 @@ describe('LogoutController', () => {
     jest.spyOn(DbAccountLogout, 'logout').mockReturnValueOnce(Promise.reject(new Error('')))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error('')))
+  })
+
+  test('should return 200 on succeeds', async () => { 
+    const { sut } = makeSut()
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(ok({ message: 'logout success'}))
   })
 
 })
