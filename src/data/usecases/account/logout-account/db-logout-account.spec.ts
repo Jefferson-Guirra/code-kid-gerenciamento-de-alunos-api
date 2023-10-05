@@ -79,4 +79,11 @@ describe('DbLogoutAccount', () => {
     expect(removeAccessSpy).toBeCalledWith('any_token')
   })
 
+  test('should return throw RemoveAccessToken fails', async () => { 
+    const { removeAccessTokenStub, sut } = makeSut()
+    jest.spyOn(removeAccessTokenStub, 'removeAccessToken').mockReturnValueOnce(Promise.reject(new Error('')))
+    const response =  sut.logout('any_token')
+    await expect(response).rejects.toThrow()
+  })
+
 })
