@@ -4,7 +4,10 @@ import { LoadAccountByAccessTokenRepository } from '../../../protocols/db/accoun
 export class DbLogoutAccount implements AccountLogout {
   constructor( private readonly loadAccount: LoadAccountByAccessTokenRepository) {}
   async logout(accessToken: string):  Promise<string | undefined> {
-    await this.loadAccount.loadByAccessToken(accessToken)
-     return await Promise.resolve(undefined)
+      const account = await this.loadAccount.loadByAccessToken(accessToken)
+      if( !account ) {
+        return undefined
+      }
+      return 'success'
   }
 }
