@@ -44,4 +44,11 @@ describe('DbLogoutAccount', () => {
     expect(loadAccountSpy).toBeCalledWith('any_token')
   })
 
+  test('should return null if LoadAccount return null', async () => { 
+    const { loadAccountStub, sut } = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.logout('any_token')
+    expect(response).toBeFalsy()
+  })
+
 })
