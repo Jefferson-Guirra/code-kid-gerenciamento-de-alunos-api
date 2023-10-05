@@ -1,5 +1,6 @@
 import { AccountModel } from '../../../../domain/models/account';
 import { LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository';
+import { RemoveAccessTokenRepository } from '../../../protocols/db/account/remove-access-token-repository';
 import { DbLogoutAccount } from './db-logout-account';
 
 const makeFakeAccountModel = (): AccountModel => ({
@@ -8,6 +9,15 @@ const makeFakeAccountModel = (): AccountModel => ({
   email: 'any_email@mail.com',
   password: 'any_password'
 })
+
+const makeRemoveAccessTokenStub = (): RemoveAccessTokenRepository => {
+  class RemoveAccessTokenRepositoryStub implements RemoveAccessTokenRepository {
+    async removeAccessToken(accessToken: string): Promise<void> {
+    }
+  }
+
+  return new RemoveAccessTokenRepositoryStub()
+}
 
 const makeLoadAccountStub = (): LoadAccountByAccessTokenRepository => {
   class LoadAccountByAccessTokenRepositoryStub implements LoadAccountByAccessTokenRepository {
@@ -20,17 +30,21 @@ const makeLoadAccountStub = (): LoadAccountByAccessTokenRepository => {
 }
 
 interface SutTypes {
-  loadAccountStub: LoadAccountByAccessTokenRepository
   sut: DbLogoutAccount
+  loadAccountStub: LoadAccountByAccessTokenRepository
+  removeAccessTokenStub:RemoveAccessTokenRepository
+
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountStub = makeLoadAccountStub()
-  const sut = new DbLogoutAccount(loadAccountStub)
+  const removeAccessTokenStub = makeRemoveAccessTokenStub()
+  const sut = new DbLogoutAccount(loadAccountStub, removeAccessTokenStub)
 
   return {
     sut,
-    loadAccountStub
+    loadAccountStub,
+    removeAccessTokenStub
   }
   
 }
@@ -56,6 +70,13 @@ describe('DbLogoutAccount', () => {
     jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.reject(new Error('')))
     const response =  sut.logout('any_token')
     await expect(response).rejects.toThrow()
+  })
+
+  test('should call RemoveAccessToken with correct accessToken', async () => { 
+    const { removeAccessTokenStub, sut } = makeSut()
+    const removeAccessSpy = jest.spyOn(removeAccessTokenStub, 'removeAccessToken')
+    await sut.logout('any_token')
+    expect(removeAccessSpy).toBeCalledWith('any_token')
   })
 
 })
