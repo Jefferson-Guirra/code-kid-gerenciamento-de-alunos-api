@@ -78,4 +78,17 @@ describe('AccountMongoRepository', () => {
     expect(account?.password).toEqual('any_password')
     expect(account?._id).toBeTruthy()
   })
+
+  test('should return account if LoadAccountByAccessToken success', async () => {
+    const sut = makeSut()
+    const { privateKey, passwordConfirmation, ...rest} = makeFakeAddAccount()
+    await accountsCollection.insertOne({...rest, accessToken: 'any_token'})
+    const account = await sut.loadByAccessToken('any_token')
+
+    expect(account?.accessToken).toEqual('any_token')
+    expect(account?.email).toEqual('any_email@mail.com')
+    expect(account?.username).toEqual('any_username')
+    expect(account?.password).toEqual('any_password')
+    expect(account?.id).toBeTruthy()
+  })
 })
