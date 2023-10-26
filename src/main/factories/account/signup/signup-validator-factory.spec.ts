@@ -20,7 +20,7 @@ export const makeEmailValidatorStub = (): EmailValidator => {
 describe('makeSignupValidator', () => { 
   test('should call validatorComposite with correct validators', () => { 
     const validators: Validation[] = []
-    for(const field of ['username', 'email', 'password', 'passwordConfirmation', 'privateKey']){
+    for(const field of ['username', 'email', 'password', 'passwordConfirmation', 'privateKey', 'units']){
     validators.push(new RequiredFieldsValidator(field)) 
     }
     validators.push(new CompareFieldsValidator('password', 'passwordConfirmation'))

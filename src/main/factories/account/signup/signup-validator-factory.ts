@@ -7,7 +7,7 @@ import { EmailValidatorAdapter } from '../../../adapters/validators/email-valida
 
 export const makeSignupValidator = (): Validation => {
   const validators: Validation[] = []
-  for( const field of ['username', 'email', 'password', 'passwordConfirmation', 'privateKey']) {
+  for( const field of ['username', 'email', 'password', 'passwordConfirmation', 'privateKey', 'units']) {
     validators.push( new RequiredFieldsValidator(field))
   } 
   validators.push(new CompareFieldsValidator('password', 'passwordConfirmation'))
