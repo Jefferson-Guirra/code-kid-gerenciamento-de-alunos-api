@@ -1,5 +1,5 @@
 import { AccountModel } from '../../../../domain/models/account';
-import { LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository';
+import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository';
 import { RemoveAccessTokenRepository } from '../../../protocols/db/account/remove-access-token-repository';
 import { DbLogoutAccount } from './db-logout-account';
 
@@ -7,7 +7,8 @@ const makeFakeAccountModel = (): AccountModel => ({
   id: 'any_id',
   username: 'any_username',
   email: 'any_email@mail.com',
-  password: 'any_password'
+  password: 'any_password',
+  units: ['any_unit']
 })
 
 const makeRemoveAccessTokenStub = (): RemoveAccessTokenRepository => {
@@ -21,8 +22,9 @@ const makeRemoveAccessTokenStub = (): RemoveAccessTokenRepository => {
 
 const makeLoadAccountStub = (): LoadAccountByAccessTokenRepository => {
   class LoadAccountByAccessTokenRepositoryStub implements LoadAccountByAccessTokenRepository {
-    async loadByAccessToken (accessToken: string): Promise<AccountModel | null> {
-      return await Promise.resolve(makeFakeAccountModel())
+    async loadByAccessToken (accessToken: string): Promise<AccountLoginModel | null> {
+      const loginAccount = makeFakeAccountModel()
+      return await Promise.resolve({accessToken: 'any_token', ...loginAccount})
     }
   }
 

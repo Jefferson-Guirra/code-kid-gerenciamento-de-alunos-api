@@ -3,4 +3,5 @@ export interface AccountModel {
   email: string,
   password: string,
   id: string
+  units: string[]
 }

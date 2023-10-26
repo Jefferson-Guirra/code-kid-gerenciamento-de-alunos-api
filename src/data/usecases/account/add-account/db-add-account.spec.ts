@@ -10,7 +10,8 @@ const makeFakeAccount = ():AccountModel => ({
   username: 'any_username',
   email: 'any_email@mail.com',
   password: 'any_password',
-  id: 'any_id'
+  id: 'any_id',
+  units: ['any_unit']
 })
 const makeFakeAddAccount = (): AddAccountModel => ({
   username: 'any_username',

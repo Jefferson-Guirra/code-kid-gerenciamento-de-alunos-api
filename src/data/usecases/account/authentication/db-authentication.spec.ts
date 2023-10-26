@@ -8,7 +8,8 @@ const makeFakeAccountModel = (): AccountModel => ({
   id: 'any_id',
   username: 'any_username',
   email: 'any_email@mail.com',
-  password: 'any_password'
+  password: 'any_password',
+  units: ['any_unit']
 })
 
 const makeEncrypterStub = (): Encrypter => {
