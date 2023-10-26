@@ -11,7 +11,7 @@ const makeFakeAddAccount = (): AddAccountModel => ({
   password: 'any_password',
   passwordConfirmation: 'any_password',
   privateKey: 'any_key',
-  units: [ 'any_unity']
+  units: ['any_unity']
 })
 
 const makeSut = (): AccountMongoRepository =>  new AccountMongoRepository()
@@ -84,11 +84,17 @@ describe('AccountMongoRepository', () => {
     const { privateKey, passwordConfirmation, ...rest} = makeFakeAddAccount()
     await accountsCollection.insertOne({...rest, accessToken: 'any_token'})
     const account = await sut.loadByAccessToken('any_token')
-
     expect(account?.accessToken).toEqual('any_token')
     expect(account?.email).toEqual('any_email@mail.com')
     expect(account?.username).toEqual('any_username')
     expect(account?.password).toEqual('any_password')
     expect(account?.id).toBeTruthy()
+    expect(account?.units).toEqual(['any_unity'])
+  })
+
+  test('should return null if LoadAccountByAccessToken return null', async () => {
+    const sut = makeSut()
+    const account = await sut.loadByAccessToken('any_token')
+    expect(account).toBeFalsy()
   })
 })
