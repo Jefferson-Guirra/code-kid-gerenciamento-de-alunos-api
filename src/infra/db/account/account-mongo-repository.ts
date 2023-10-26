@@ -1,4 +1,5 @@
 import { AddAccountRepository } from '../../../data/protocols/db/account/add-account-repository';
+import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../data/protocols/db/account/load-account-by-access-token-repository';
 import { LoadAccountByEmailRepository } from '../../../data/protocols/db/account/load-account-by-email-repository';
 import { RemoveAccessTokenRepository } from '../../../data/protocols/db/account/remove-access-token-repository';
 import { AccountModel } from '../../../domain/models/account';
@@ -8,7 +9,8 @@ import { MongoHelper } from '../helpers/mongo-helper';
 export class AccountMongoRepository implements 
 AddAccountRepository,
 LoadAccountByEmailRepository,
-RemoveAccessTokenRepository {
+RemoveAccessTokenRepository,
+LoadAccountByAccessTokenRepository {
   async addAccount(account: AddAccountModel): Promise<AccountModel | null>{
     const {passwordConfirmation,privateKey, ...rest} = account
     const accountsCollection = await MongoHelper.getCollection('accounts')
@@ -30,6 +32,11 @@ RemoveAccessTokenRepository {
         accessToken: ''
       }
     })
+  }
 
+  async loadByAccessToken (accessToken: string): Promise<AccountLoginModel | null> {
+    const accountCollection = await MongoHelper.getCollection('accounts')
+    const account = await accountCollection.findOne({accessToken})
+    return account && MongoHelper.Map(account)
   }
 }
