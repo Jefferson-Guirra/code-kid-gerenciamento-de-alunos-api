@@ -6,6 +6,7 @@ import { MongoHelper } from '../../infra/db/helpers/mongo-helper'
 import { Collection } from 'mongodb'
 import { HttpRequest } from '../../presentation/protocols/http'
 import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
+import supertest from 'supertest'
 
 let keysCollection: Collection
 let accountsCollection: Collection
@@ -98,4 +99,22 @@ describe('POST /LOGIN', () => {
     await request(app).post('/api/login').send(makeLoginAccountModel).expect(200)
   })
 
+})
+
+describe('DELETE /LOGOUT', () => {
+  beforeAll( async () =>  {
+    await MongoHelper.connect(process.env.MONGO_URL as string)
+  })
+  beforeEach( async () => {
+    accountsCollection = await MongoHelper.getCollection('accounts')
+    await accountsCollection.deleteMany({})
+  })
+  afterAll(async () => {
+   await MongoHelper.disconnect()
+  })
+  test('should return 401 if logout fails', async () => { 
+    const accessToken = 'any_token'
+    await request(app).delete('/api/logout').send({accessToken}).expect(401)
+
+  })
 })
