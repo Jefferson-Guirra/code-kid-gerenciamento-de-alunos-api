@@ -4,9 +4,7 @@ import { AddAccountModel } from '../../domain/usecases/account/add-account'
 import app from '../config/app'
 import { MongoHelper } from '../../infra/db/helpers/mongo-helper'
 import { Collection } from 'mongodb'
-import { HttpRequest } from '../../presentation/protocols/http'
 import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
-import supertest from 'supertest'
 
 let keysCollection: Collection
 let accountsCollection: Collection
@@ -115,6 +113,13 @@ describe('DELETE /LOGOUT', () => {
   test('should return 401 if logout fails', async () => { 
     const accessToken = 'any_token'
     await request(app).delete('/api/logout').send({accessToken}).expect(401)
-
   })
+
+  test('should return 200 if logout success', async () => { 
+    const accessToken = 'any_token'
+    const fakeAccount = fakeAddAccount()
+    await accountsCollection.insertOne({ accessToken, ...fakeAccount})
+    await request(app).delete('/api/logout').send({accessToken}).expect(200)
+  })
+
 })
