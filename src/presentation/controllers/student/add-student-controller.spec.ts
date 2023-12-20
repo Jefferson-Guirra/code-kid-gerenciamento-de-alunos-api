@@ -52,4 +52,5 @@ describe('AddStudentController', () => {
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
   })
+  
 })
