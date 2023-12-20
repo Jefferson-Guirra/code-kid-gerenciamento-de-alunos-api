@@ -15,6 +15,7 @@ const makeFakeRequest = (): HttpRequest => ({
     phone: 0,
     course: ['any_course'],
     payment: 'yes',
+    registration: 'active',
     date_payment: 'any_date'
   }
 })
@@ -28,6 +29,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
   course: ['any_course'],
   payment: 'yes',
   date_payment: 'any_date',
+  registration: 'active',
   id:'any_id'
 })
 
