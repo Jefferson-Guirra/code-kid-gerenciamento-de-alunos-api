@@ -3,5 +3,8 @@ export interface Student {
   age: number,
   father: string
   mother:string,
-  phone: number
+  phone: number,
+  course: string[],
+  payment: string,
+  date_payment: string
 }

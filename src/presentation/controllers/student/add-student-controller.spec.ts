@@ -10,7 +10,10 @@ const makeFakeRequest = (): HttpRequest => ({
     age: 0,
     father: 'any_father',
     mother: 'any_mother',
-    phone: 0
+    phone: 0,
+    course: ['any_course'],
+    payment: 'yes',
+    date_payment: 'any_date'
   }
 })
 
