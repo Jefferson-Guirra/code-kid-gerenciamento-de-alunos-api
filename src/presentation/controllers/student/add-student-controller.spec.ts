@@ -1,3 +1,5 @@
+import { MissingParamsError } from '../../errors/missing-params-error'
+import { badRequest } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { AddStudentController } from './add-student-controller'
@@ -40,6 +42,11 @@ describe('AddStudentController', () => {
     const validatorSpy = jest.spyOn(validationStub, 'validation')
     await sut.handle(makeFakeRequest())
     expect(validatorSpy).toHaveBeenCalledWith(makeFakeRequest())
-    
+  })
+  test('should return 401 if validation fails', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
   })
 })
