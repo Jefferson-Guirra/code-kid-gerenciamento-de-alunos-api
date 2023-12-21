@@ -35,8 +35,8 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
 
 const makeAddStudentStub = (): AddStudent => {
   class AddStudentStub implements AddStudent {
-    add(student: Student): AddStudentModel | null {
-      return makeFakeAddStudentModel()
+    async add(student: Student): Promise<AddStudentModel | null> {
+      return await Promise.resolve(makeFakeAddStudentModel())
     }
   }
   return new AddStudentStub()
@@ -86,6 +86,11 @@ describe('AddStudentController', () => {
     const addSpy = jest.spyOn(addStudentStub, 'add')
     await sut.handle(makeFakeRequest())
     expect(addSpy).toBeCalledWith(makeFakeRequest().body)
+  })
+
+  test('should return 401 if AddStudent fails', async () => {
+    const { sut, addStudentStub } = makeSut()
+    jest.spyOn(addStudentStub, 'add').mockReturnValueOnce(Promise.resolve(null))
   })
 
 })

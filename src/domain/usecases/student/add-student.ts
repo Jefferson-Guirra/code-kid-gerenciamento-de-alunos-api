@@ -5,5 +5,5 @@ export interface AddStudentModel  extends Student{
 }
 
 export interface AddStudent {
-  add: (student: Student) => AddStudentModel | null
+  add: (student: Student) => Promise<AddStudentModel | null>
 }
