@@ -16,11 +16,11 @@ export class AddStudentController implements Controller {
         return badRequest(error)
       }
       const body = request.body
-      const addStudent = await this.addStudent.add(body)
-      if(!addStudent) {
+      const student = await this.addStudent.add(body)
+      if(!student) {
         return unauthorized()
       }
-      return ok('success')
+      return ok(student)
     } catch(err) {
       return serverError(err as Error)
     }
