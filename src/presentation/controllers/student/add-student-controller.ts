@@ -1,5 +1,5 @@
 import { AddStudent } from '../../../domain/usecases/student/add-student';
-import { badRequest, ok } from '../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../helpers/http/http';
 import { Controller } from '../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 import { Validation } from '../../protocols/validation';
@@ -14,8 +14,11 @@ export class AddStudentController implements Controller {
     if (error) {
       return badRequest(error)
     }
-    const student = request.body
-    this.addStudent.add(student)
+    const body = request.body
+    const addStudent = await this.addStudent.add(body)
+    if(!addStudent) {
+      return unauthorized()
+    }
     return ok('success')
 
   }
