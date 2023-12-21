@@ -89,4 +89,10 @@ describe('LoginController', () => {
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error('')))
    })
+
+   test('should return 200 on succeeds', async () => { 
+    const { sut } = makeSut()
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(ok(makeFakeAuthenticationModel()))
+   })
 })
