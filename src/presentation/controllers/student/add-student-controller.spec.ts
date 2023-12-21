@@ -1,7 +1,7 @@
 import { Student } from '../../../domain/models/student'
 import { AddStudent, AddStudentModel } from '../../../domain/usecases/student/add-student'
 import { MissingParamsError } from '../../errors/missing-params-error'
-import { badRequest } from '../../helpers/http/http'
+import { badRequest, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { AddStudentController } from './add-student-controller'
@@ -91,6 +91,9 @@ describe('AddStudentController', () => {
   test('should return 401 if AddStudent fails', async () => {
     const { sut, addStudentStub } = makeSut()
     jest.spyOn(addStudentStub, 'add').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
+
   })
 
 })
