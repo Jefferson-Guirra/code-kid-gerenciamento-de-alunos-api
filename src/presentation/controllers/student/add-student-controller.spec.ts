@@ -1,7 +1,7 @@
 import { Student } from '../../../domain/models/student'
 import { AddStudent, AddStudentModel } from '../../../domain/usecases/student/add-student'
 import { MissingParamsError } from '../../errors/missing-params-error'
-import { badRequest, serverError, unauthorized } from '../../helpers/http/http'
+import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http'
 import { HttpRequest } from '../../protocols/http'
 import { Validation } from '../../protocols/validation'
 import { AddStudentController } from './add-student-controller'
@@ -99,6 +99,11 @@ describe('AddStudentController', () => {
     jest.spyOn(addStudentStub, 'add').mockReturnValueOnce(Promise.reject(new Error('')))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error('')))
+  })
+  test('should return 200 on succeeds', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(ok(makeFakeAddStudentModel()))
   })
 
 })
