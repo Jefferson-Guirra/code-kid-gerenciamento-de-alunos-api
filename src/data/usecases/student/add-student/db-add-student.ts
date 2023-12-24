@@ -6,7 +6,21 @@ export class DbAddStudent implements AddStudent {
   constructor ( private readonly loadStudent: LoadStudentByName) {}
   async add(student: Student): Promise<AddStudentModel | null> {
     const { name } = student
-    this.loadStudent.loadByName(name)
-    return null
+    const loadStudent = await this.loadStudent.loadByName(name)
+    if(loadStudent) {
+      return null
+    }
+    return {
+      id: 'any_id',
+      name: 'any_name',
+      age: 0,
+      father: 'any_father',
+      mother: 'any_mother',
+      phone: 0,
+      course: ['any_course'],
+      payment: 'yes',
+      registration: 'active',
+      date_payment: 'any_date',
+    }
   }
 }
