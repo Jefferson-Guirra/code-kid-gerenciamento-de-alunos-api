@@ -54,4 +54,11 @@ describe('DbAddStudent', () => {
     expect(response).toBeFalsy()
   })
 
+  test('should return throw if loadAccount fails', async () => {
+    const { sut, loadStudentStub } = makeSut()
+    jest.spyOn(loadStudentStub, 'loadByName').mockReturnValueOnce(Promise.reject(new Error()))
+    const response = sut.add(makeFakeRequest())
+    await expect(response).rejects.toThrow()
+  })
+
 })
