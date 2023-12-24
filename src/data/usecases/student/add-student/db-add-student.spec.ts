@@ -47,4 +47,11 @@ describe('DbAddStudent', () => {
     expect(loadSpy).toBeCalledWith('any_name')
   })
 
+  test('should return null if LoadStudent return a student', async () => {
+    const { sut, loadStudentStub } = makeSut()
+    jest.spyOn(loadStudentStub, 'loadByName').mockReturnValueOnce(Promise.resolve({...makeFakeRequest(), id: 'any_id'}))
+    const response = await sut.add(makeFakeRequest())
+    expect(response).toBeFalsy()
+  })
+
 })
