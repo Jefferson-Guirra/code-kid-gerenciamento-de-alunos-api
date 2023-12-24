@@ -1,6 +1,6 @@
 import { Student } from '../../../../domain/models/student';
 import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
-import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name';
+import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name-repository';
 
 export class DbAddStudent implements AddStudent {
   constructor ( private readonly loadStudent: LoadStudentByName) {}

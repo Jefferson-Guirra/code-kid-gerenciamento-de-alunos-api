@@ -1,6 +1,6 @@
 import { Student } from '../../../../domain/models/student';
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
-import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name';
+import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name-repository';
 import { DbAddStudent } from './db-add-student';
 
 const makeFakeRequest = (): Student => ({
