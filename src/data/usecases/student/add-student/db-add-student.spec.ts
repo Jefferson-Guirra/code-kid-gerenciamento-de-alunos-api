@@ -81,4 +81,11 @@ describe('DbAddStudent', () => {
     expect(addSpy).toHaveBeenCalledWith(makeFakeRequest())
   })
 
+  test('should return throw if AddStudentRepository fails', async () => {
+    const { sut, addStudentStub } = makeSut()
+    jest.spyOn(addStudentStub, 'add').mockReturnValueOnce(Promise.reject(new Error()))
+    const response = sut.add(makeFakeRequest())
+    await expect(response).rejects.toThrow()
+  })
+
 })
