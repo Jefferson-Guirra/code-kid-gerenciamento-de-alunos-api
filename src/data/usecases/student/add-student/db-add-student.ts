@@ -1,11 +1,11 @@
 import { Student } from '../../../../domain/models/student';
 import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
 import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
-import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name-repository';
+import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
 
 export class DbAddStudent implements AddStudent {
   constructor ( 
-    private readonly loadStudent: LoadStudentByName,
+    private readonly loadStudent: LoadStudentByNameRepository,
     private readonly addStudentRepository: AddStudentRepository
     ) {}
   async add(student: Student): Promise<AddStudentModel | null> {

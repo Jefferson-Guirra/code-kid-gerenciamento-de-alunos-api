@@ -1,7 +1,7 @@
 import { Student } from '../../../../domain/models/student';
 import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
 import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
-import { LoadStudentByName } from '../../../protocols/db/student/load-student-by-name-repository';
+import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
 import { DbAddStudent } from './db-add-student';
 
 const makeFakeRequest = (): Student => ({
@@ -16,8 +16,8 @@ const makeFakeRequest = (): Student => ({
     date_payment: 'any_date'
 })
 
-const makeLoadStudentStub = (): LoadStudentByName => {
-  class LoadStudentStub implements LoadStudentByName {
+const makeLoadStudentStub = (): LoadStudentByNameRepository => {
+  class LoadStudentStub implements LoadStudentByNameRepository {
     async loadByName (name: string): Promise<AddStudentModel | null> {
       return await Promise.resolve(null)
     }
@@ -36,7 +36,7 @@ const makeAddStudentRepositoryStub = (): AddStudentRepository => {
 
 interface SuTypes {
   addStudentStub: AddStudentRepository
-  loadStudentStub: LoadStudentByName
+  loadStudentStub: LoadStudentByNameRepository
   sut: DbAddStudent
 }
 
