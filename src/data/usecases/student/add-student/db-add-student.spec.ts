@@ -88,4 +88,10 @@ describe('DbAddStudent', () => {
     await expect(response).rejects.toThrow()
   })
 
+  test('should return a student on succeeds', async () => {
+    const { sut } = makeSut()
+    const response = await sut.add(makeFakeRequest())
+    expect(response).toEqual({ ...makeFakeRequest(), id: 'any_id' })
+  })
+
 })
