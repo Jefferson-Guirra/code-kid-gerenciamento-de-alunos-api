@@ -14,7 +14,7 @@ export class DbAddStudent implements AddStudent {
     if(loadStudent) {
       return null
     }
-    this.addStudentRepository.add(student)
+    await this.addStudentRepository.add(student)
     return {
       id: 'any_id',
       name: 'any_name',
