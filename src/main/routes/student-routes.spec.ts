@@ -43,4 +43,17 @@ describe('POST /add-student', () => {
   test('should return 200 on succeeds', async () => {
     await request(app).post('/api/add-student').send(makeFakeRequest().body).expect(200)
   })
+
+  test('should return 400 in bad request', async () => {
+    await request(app).post('/api/add-student').send({
+      name: 'any_name',
+      age: 0,
+      father: 'any_father',
+      mother: 'any_mother',
+      phone: 0,
+      course: ['any_course'],
+      payment: 'yes',
+      registration: 'active',
+    }).expect(400)
+  })
 })
