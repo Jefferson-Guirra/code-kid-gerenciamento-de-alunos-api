@@ -64,4 +64,10 @@ describe('StudentMongoRepository', () => {
     expect(response?.name).toEqual('any_name')
     expect(response?.phone).toEqual(0)
   })
+
+  test('should return null if loadStudent fails', async () => {
+    const sut = makeSut()
+    const response = await sut.loadByName('any_name')
+    expect(response).toBeFalsy()
+  })
 })
