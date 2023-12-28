@@ -39,4 +39,8 @@ describe('POST /add-student', () => {
     await studentsCollection.insertOne(student.body)
     await request(app).post('/api/add-student').send(student.body).expect(401)
   })
+
+  test('should return 200 on succeeds', async () => {
+    await request(app).post('/api/add-student').send(makeFakeRequest().body).expect(200)
+  })
 })
