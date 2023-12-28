@@ -13,7 +13,7 @@ const makeFakeRequest = (): Student => ({
     course: ['any_course'],
     payment: 'yes',
     registration: 'active',
-    date_payment: 'any_date'
+    date_payment: ['any_date']
 })
 
 const makeLoadStudentStub = (): LoadStudentByNameRepository => {

@@ -12,7 +12,7 @@ const makeFakeRequest = (): Student => ({
   course: ['any_course'],
   payment: 'yes',
   registration: 'active',
-  date_payment: 'any_date'
+  date_payment: ['any_date']
 })
 
 let studentsCollection: Collection
@@ -40,7 +40,7 @@ describe('StudentMongoRepository', () => {
     expect(student?.name).toEqual('any_name')
     expect(student?.age).toBe(0)
     expect(student?.id).toBeTruthy()
-    expect(student?.date_payment).toEqual('any_date')
+    expect(student?.date_payment).toEqual(['any_date'])
     expect(student?.father).toEqual('any_father')
     expect(student?.mother).toEqual('any_mother')
     expect(student?.registration).toEqual('active')
