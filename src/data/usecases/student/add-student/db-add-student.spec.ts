@@ -2,7 +2,7 @@ import { Student } from '../../../../domain/models/student';
 import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
 import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
 import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
-import { DbAddStudent } from './db-add-student';
+import { DbAddStudentRepository } from './db-add-student';
 
 const makeFakeRequest = (): Student => ({
     name: 'any_name',
@@ -37,13 +37,13 @@ const makeAddStudentRepositoryStub = (): AddStudentRepository => {
 interface SuTypes {
   addStudentStub: AddStudentRepository
   loadStudentStub: LoadStudentByNameRepository
-  sut: DbAddStudent
+  sut: DbAddStudentRepository
 }
 
 const makeSut = (): SuTypes => {
   const addStudentStub = makeAddStudentRepositoryStub()
   const loadStudentStub = makeLoadStudentStub()
-  const sut = new DbAddStudent(loadStudentStub, addStudentStub)
+  const sut = new DbAddStudentRepository(loadStudentStub, addStudentStub)
 
   return {
     addStudentStub,
@@ -52,7 +52,7 @@ const makeSut = (): SuTypes => {
   }
 }
 
-describe('DbAddStudent', () => { 
+describe('DbAddStudentRepository', () => { 
   test('should call LoadStudent with correct name', async () => {
     const { sut, loadStudentStub } = makeSut()
     const loadSpy = jest.spyOn(loadStudentStub, 'loadByName')
@@ -87,6 +87,7 @@ describe('DbAddStudent', () => {
     const response = sut.add(makeFakeRequest())
     await expect(response).rejects.toThrow()
   })
+
 
   test('should return a student on succeeds', async () => {
     const { sut } = makeSut()

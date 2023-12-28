@@ -3,7 +3,7 @@ import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student
 import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
 import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
 
-export class DbAddStudent implements AddStudent {
+export class DbAddStudentRepository implements AddStudent {
   constructor ( 
     private readonly loadStudent: LoadStudentByNameRepository,
     private readonly addStudentRepository: AddStudentRepository
