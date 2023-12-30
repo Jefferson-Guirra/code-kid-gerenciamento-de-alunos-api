@@ -1,5 +1,5 @@
 import { RemoveStudent } from '../../../../domain/usecases/student/remove-student';
-import { badRequest, ok } from '../../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -15,7 +15,10 @@ export class RemoveStudentController implements Controller {
       return badRequest(error)
     }
     const { id } = request.body
-    await this.removeStudent.remove(id)
+    const response = await this.removeStudent.remove(id)
+    if(!response) {
+      return unauthorized()
+    }
     return ok('success')
   }
 }
