@@ -1,8 +1,8 @@
-import { AddStudent } from '../../../domain/usecases/student/add-student';
-import { badRequest, ok, serverError, unauthorized } from '../../helpers/http/http';
-import { Controller } from '../../protocols/controller';
-import { HttpRequest, HttpResponse } from '../../protocols/http';
-import { Validation } from '../../protocols/validation';
+import { AddStudent } from '../../../../domain/usecases/student/add-student';
+import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http';
+import { Controller } from '../../../protocols/controller';
+import { HttpRequest, HttpResponse } from '../../../protocols/http';
+import { Validation } from '../../../protocols/validation';
 
 export class AddStudentController implements Controller {
   constructor(
