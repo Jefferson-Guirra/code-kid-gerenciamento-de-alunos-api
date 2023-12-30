@@ -1,3 +1,5 @@
+import { MissingParamsError } from '../../../errors/missing-params-error';
+import { badRequest } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { RemoveStudentController } from './remove-student-controller';
@@ -37,5 +39,12 @@ describe('RemoveStudentController', () => {
     const validatorSpy = jest.spyOn(validatorStub, 'validation')
     await sut.handle(makeFakeRequest())
     expect(validatorSpy).toHaveBeenCalledWith(makeFakeRequest())
+  })
+
+  test('should return 400 if validator return a error', async () => {
+    const { sut, validatorStub } = makeSut()
+    jest.spyOn(validatorStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
   })
 })
