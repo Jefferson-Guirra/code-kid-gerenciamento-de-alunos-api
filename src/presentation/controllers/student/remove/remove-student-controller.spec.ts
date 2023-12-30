@@ -1,13 +1,10 @@
+import { RemoveStudent } from '../../../../domain/usecases/student/remove-student';
 import { MissingParamsError } from '../../../errors/missing-params-error';
 import { badRequest } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { RemoveStudentController } from './remove-student-controller';
 
-interface SutTypes {
-  validatorStub: Validation
-  sut: RemoveStudentController
-}
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -24,12 +21,28 @@ const makeValidatorStub = (): Validation => {
   return new ValidationStub()
 }
 
+const makeRemoveStudentStub = (): RemoveStudent => {
+  class RemoveStudentStub implements RemoveStudent {
+    async remove (id: string): Promise<'removed' | null> {
+      return await Promise.resolve('removed')
+    }
+  }
+  return new RemoveStudentStub()
+}
+interface SutTypes {
+  removeStudentStub: RemoveStudent
+  validatorStub: Validation
+  sut: RemoveStudentController
+}
+
 const makeSut = (): SutTypes => {
+  const removeStudentStub = makeRemoveStudentStub()
   const validatorStub = makeValidatorStub()
-  const sut = new RemoveStudentController(validatorStub)
+  const sut = new RemoveStudentController(validatorStub, removeStudentStub)
   return {
     sut,
-    validatorStub
+    validatorStub,
+    removeStudentStub
   }
 }
 
@@ -46,5 +59,13 @@ describe('RemoveStudentController', () => {
     jest.spyOn(validatorStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
+  })
+
+  test('should call RemoveStudent with correct id', async () => {
+    const { sut, removeStudentStub } = makeSut()
+    const removeSpy = jest.spyOn(removeStudentStub, 'remove')
+    await sut.handle(makeFakeRequest())
+    expect(removeSpy).toHaveBeenCalledWith('any_id')
+
   })
 })
