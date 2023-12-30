@@ -20,7 +20,7 @@ export class RemoveStudentController implements Controller {
       if(!response) {
         return unauthorized()
       }
-      return ok('success')
+      return ok('removed')
     }catch(err) {
       return serverError(err as Error)
     }
