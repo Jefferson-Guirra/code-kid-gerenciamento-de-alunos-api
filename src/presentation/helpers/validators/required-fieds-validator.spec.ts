@@ -1,4 +1,5 @@
 import { InvalidParamsError } from '../../errors/invalid-params-error'
+import { MissingParamsError } from '../../errors/missing-params-error'
 import { HttpRequest } from '../../protocols/http'
 import { RequiredFieldsValidator } from './required-fields-validator'
 
@@ -14,7 +15,7 @@ describe('RequiredFieldsValidator', () => {
   test('should  return MissingParamsError if validations fails', () => {
     const sut = makeSut()
     const response = sut.validation(makeFakeRequest())
-    expect(response).toEqual(new InvalidParamsError('email'))
+    expect(response).toEqual(new MissingParamsError('email'))
   })
 
   test('should  return MissingParamsError if validations fails', () => {
