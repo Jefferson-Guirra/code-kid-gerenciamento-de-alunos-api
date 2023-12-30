@@ -1,6 +1,6 @@
 import { RemoveStudent } from '../../../../domain/usecases/student/remove-student';
 import { MissingParamsError } from '../../../errors/missing-params-error';
-import { badRequest } from '../../../helpers/http/http';
+import { badRequest, unauthorized } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { RemoveStudentController } from './remove-student-controller';
@@ -66,6 +66,12 @@ describe('RemoveStudentController', () => {
     const removeSpy = jest.spyOn(removeStudentStub, 'remove')
     await sut.handle(makeFakeRequest())
     expect(removeSpy).toHaveBeenCalledWith('any_id')
+  })
 
+  test('should return 401 if remove student return null', async () => {
+    const { sut, removeStudentStub } = makeSut()
+    jest.spyOn(removeStudentStub, 'remove').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 })
