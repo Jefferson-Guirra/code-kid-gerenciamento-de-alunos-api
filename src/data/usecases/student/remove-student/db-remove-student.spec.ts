@@ -1,6 +1,7 @@
 import { Student } from '../../../../domain/models/student'
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { LoadStudentByIdRepository } from '../../../protocols/db/student/load-student-by-id-repository'
+import { RemoveStudentByIdRepository } from '../../../protocols/db/student/remove-student-by-id-repository'
 import { DbRemoveStudent } from './db-remove-student'
 
 const makeFakeAddStudentModel = (): AddStudentModel => ({
@@ -25,16 +26,28 @@ const makeLoadStudentByIdRepository= (): LoadStudentByIdRepository => {
 
 }
 
+const makeRemoveStudentByIdRepositoryStub = (): RemoveStudentByIdRepository => {
+  class RemoveStudentByIdRepositoryStub implements RemoveStudentByIdRepository {
+    async removeById (id: string): Promise<string> {
+      return await Promise.resolve('removed')
+    }
+  }
+  return new RemoveStudentByIdRepositoryStub()
+}
+
 interface SutTypes {
+  removeStudentRepositoryStub: RemoveStudentByIdRepository
   loadStudentStub: LoadStudentByIdRepository
   sut: DbRemoveStudent
 }
 
 const makeSut = (): SutTypes => {
+  const removeStudentRepositoryStub = makeRemoveStudentByIdRepositoryStub()
   const loadStudentStub = makeLoadStudentByIdRepository()
-  const sut = new DbRemoveStudent(loadStudentStub)
+  const sut = new DbRemoveStudent(loadStudentStub, removeStudentRepositoryStub)
 
   return {
+    removeStudentRepositoryStub,
     loadStudentStub,
     sut
   }
@@ -61,4 +74,12 @@ describe('DbRemoveStudent', () => {
     const response = await sut.remove('any_id')
     expect(response).toBeFalsy()
   })
+
+  test('should call RemoveStudent wit correct id', async () => {
+    const { sut, removeStudentRepositoryStub } = makeSut()
+    const removeSpy = jest.spyOn(removeStudentRepositoryStub, 'removeById')
+    await sut.remove('any_id')
+    expect(removeSpy).toBeCalledWith('any_id')
+  })
+
 })
