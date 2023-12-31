@@ -89,4 +89,10 @@ describe('DbRemoveStudent', () => {
     await expect(response).rejects.toThrow()
   })
 
+  test('should return message on succeeds', async () => {
+    const { sut } = makeSut()
+    const response = await sut.remove('any_id')
+    expect(response).toEqual('removed')
+  })
+
 })
