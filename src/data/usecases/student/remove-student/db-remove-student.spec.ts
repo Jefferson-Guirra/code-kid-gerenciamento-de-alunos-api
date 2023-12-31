@@ -54,4 +54,11 @@ describe('DbRemoveStudent', () => {
     const response = sut.remove('any_id')
     await expect(response).rejects.toThrow()
   })
+
+  test('should return null if LoadStudent return null', async () => {
+    const { sut, loadStudentStub } = makeSut()
+    jest.spyOn(loadStudentStub, 'loadById').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.remove('any_id')
+    expect(response).toBeFalsy()
+  })
 })
