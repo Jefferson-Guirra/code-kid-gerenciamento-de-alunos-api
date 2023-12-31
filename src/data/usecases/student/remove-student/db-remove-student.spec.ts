@@ -1,4 +1,3 @@
-import { Student } from '../../../../domain/models/student'
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { LoadStudentByIdRepository } from '../../../protocols/db/student/load-student-by-id-repository'
 import { RemoveStudentByIdRepository } from '../../../protocols/db/student/remove-student-by-id-repository'
@@ -18,7 +17,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
 })
 const makeLoadStudentByIdRepository= (): LoadStudentByIdRepository => {
   class LoadStudentByIdRepositoryStub implements LoadStudentByIdRepository {
-    async loadById (id: string): Promise<Student | null> {
+    async loadById (id: string): Promise<AddStudentModel | null> {
       return await Promise.resolve(makeFakeAddStudentModel())
     }
   }
