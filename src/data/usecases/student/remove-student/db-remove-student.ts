@@ -12,7 +12,7 @@ export class DbRemoveStudent implements RemoveStudent {
     if(!student) {
       return null
     }
-    await this.removeStudent.removeById(id)
-    return 'removed'
+    const response = await this.removeStudent.removeById(id)
+    return response as 'removed'
   }
 }
