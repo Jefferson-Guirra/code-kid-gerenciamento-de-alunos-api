@@ -82,4 +82,11 @@ describe('DbRemoveStudent', () => {
     expect(removeSpy).toBeCalledWith('any_id')
   })
 
+  test('should return throw id RemoveStudent fails', async () => {
+    const { sut, removeStudentRepositoryStub } = makeSut()
+    jest.spyOn(removeStudentRepositoryStub, 'removeById').mockReturnValueOnce(Promise.reject(new Error()))
+    const response = sut.remove('any_id')
+    await expect(response).rejects.toThrow()
+  })
+
 })
