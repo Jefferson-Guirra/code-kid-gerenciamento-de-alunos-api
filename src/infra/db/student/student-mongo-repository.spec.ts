@@ -71,7 +71,7 @@ describe('StudentMongoRepository', () => {
     expect(response).toBeFalsy()
   })
 
-  test('should return student if loadStudent success', async () => {
+  test('should return student if loadStudentById success', async () => {
     const sut = makeSut()
     const result = await studentsCollection.insertOne(makeFakeRequest())
     const response = await sut.loadById(result.insertedId.toString())
@@ -86,6 +86,13 @@ describe('StudentMongoRepository', () => {
     expect(response?.name).toEqual('any_name')
     expect(response?.phone).toEqual(0)
   })
+  test('should return null if LoadStudentById return null', async () => {
+    const sut = makeSut()
+    const response = await sut.loadById('6591f4322dc6f594b58c42e0')
+    expect(response).toBeFalsy()
+  })
+
+
 
 
 })
