@@ -70,4 +70,22 @@ describe('StudentMongoRepository', () => {
     const response = await sut.loadByName('any_name')
     expect(response).toBeFalsy()
   })
+
+  test('should return student if loadStudent success', async () => {
+    const sut = makeSut()
+    const result = await studentsCollection.insertOne(makeFakeRequest())
+    const response = await sut.loadById(result.insertedId.toString())
+    expect(response?.name).toEqual('any_name')
+    expect(response?.age).toBe(0)
+    expect(response?.id).toBeTruthy()
+    expect(response?.date_payment).toEqual(['any_date'])
+    expect(response?.father).toEqual('any_father')
+    expect(response?.mother).toEqual('any_mother')
+    expect(response?.registration).toEqual('active')
+    expect(response?.course).toEqual(['any_course'])
+    expect(response?.name).toEqual('any_name')
+    expect(response?.phone).toEqual(0)
+  })
+
+
 })
