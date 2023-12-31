@@ -4,7 +4,7 @@ import { LoadStudentByIdRepository } from '../../../protocols/db/student/load-st
 export class DbRemoveStudent implements RemoveStudent {
   constructor(private readonly loadStudent: LoadStudentByIdRepository) {}
   async remove(id: string): Promise<'removed' | null> {
-    this.loadStudent.loadById(id)
+    await this.loadStudent.loadById(id)
     return null
   }
 }
