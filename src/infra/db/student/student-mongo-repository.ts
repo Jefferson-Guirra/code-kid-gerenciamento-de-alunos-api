@@ -5,11 +5,13 @@ import { LoadStudentByNameRepository } from '../../../data/protocols/db/student/
 import { Student } from '../../../domain/models/student';
 import { AddStudentModel } from '../../../domain/usecases/student/add-student';
 import { MongoHelper } from '../helpers/mongo-helper';
+import { RemoveStudentByIdRepository } from '../../../data/protocols/db/student/remove-student-by-id-repository';
 
 export class StudentMongoRepository implements 
 AddStudentRepository,
 LoadStudentByNameRepository,
-LoadStudentByIdRepository {
+LoadStudentByIdRepository,
+RemoveStudentByIdRepository {
   async add(student: Student): Promise<AddStudentModel | null> {
     const studentCollections = await MongoHelper.getCollection('students')
     const result = await studentCollections.insertOne(student)
@@ -28,6 +30,13 @@ LoadStudentByIdRepository {
     const studentsCollection = await MongoHelper.getCollection('students')
     const student = await studentsCollection.findOne({_id: convertedId})
     return student && MongoHelper.Map(student)
+  }
+
+  async removeById (id: string): Promise<string> {
+    const studentCollections = await MongoHelper.getCollection('students')
+    const convertedId = new ObjectId(id)
+    await studentCollections.deleteOne({_id: convertedId})
+    return 'removed'
   }
 
 
