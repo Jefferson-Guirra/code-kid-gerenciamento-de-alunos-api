@@ -92,7 +92,19 @@ describe('StudentMongoRepository', () => {
     expect(response).toBeFalsy()
   })
 
+  test('should return removed message if removeStudent success', async() => {
+    const sut = makeSut()
+    let count = await studentsCollection.countDocuments()
+    expect(count).toBe(0)
+    const result = await studentsCollection.insertOne(makeFakeRequest())
+    count = await studentsCollection.countDocuments()
+    expect(count).toBe(1)
+    const response = await sut.removeById(result.insertedId.toString())
+    count = await studentsCollection.countDocuments()
+    expect(count).toBe(0)
+    expect(response).toEqual('removed')
 
+  })
 
 
 })
