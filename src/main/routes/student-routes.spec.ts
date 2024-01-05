@@ -16,6 +16,7 @@ const makeFakeRequest = (): HttpRequest => ({
     phone: 0,
     course: ['any_course'],
     payment: 'yes',
+    email: 'any_email@mail.com',
     registration: 'active',
     date_payment: ['any_date']
   }
