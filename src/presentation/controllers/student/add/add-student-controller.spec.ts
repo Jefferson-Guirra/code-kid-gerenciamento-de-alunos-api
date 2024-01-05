@@ -28,6 +28,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
   phone: 0,
   course: ['any_course'],
   payment: 'yes',
+  email: 'any_email@mail.com',
   date_payment: ['any_date'],
   registration: 'active',
   id:'any_id'

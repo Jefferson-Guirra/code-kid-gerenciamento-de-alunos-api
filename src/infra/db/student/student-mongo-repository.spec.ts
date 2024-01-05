@@ -12,6 +12,7 @@ const makeFakeRequest = (): Student => ({
   course: ['any_course'],
   payment: 'yes',
   registration: 'active',
+  email: 'any_email@mail.com',
   date_payment: ['any_date']
 })
 

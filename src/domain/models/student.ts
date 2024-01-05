@@ -7,5 +7,6 @@ export interface Student {
   course: string[],
   payment: string,
   date_payment: string[],
+  email: string,
   registration: | 'active' | 'suspense' | 'inactive'
 }
