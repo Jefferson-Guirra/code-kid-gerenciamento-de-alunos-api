@@ -16,4 +16,10 @@ describe('CheckRequestValidator', () => {
     const response = sut.validation(makeFakeRequest())
     expect(response).toEqual(new UnnecessaryParamsError())
   })
+
+  test('should return undefined on succeeds', () => {
+    const sut = makeSut(['any_field', 'random_field'])
+    const response = sut.validation(makeFakeRequest())
+    expect(response).toBeFalsy()
+  })
 })
