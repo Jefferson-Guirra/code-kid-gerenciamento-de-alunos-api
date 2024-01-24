@@ -1,3 +1,4 @@
+import { CheckRequestValidator } from '../../../../presentation/helpers/validators/check-request-validator';
 import { EmailValidation } from '../../../../presentation/helpers/validators/email-validator';
 import { RequiredFieldsValidator } from '../../../../presentation/helpers/validators/required-fields-validator';
 import { ValidatorComposite } from '../../../../presentation/helpers/validators/validator-composite';
@@ -19,6 +20,17 @@ export const makeAddStudentValidatorFactory = (): Validation => {
     'email'
   ]){
     validators.push(new RequiredFieldsValidator(field))
+    validators.push(new CheckRequestValidator([    
+    'registration',
+    'name',
+    'age',
+    'father',
+    'mother',
+    'phone',
+    'course',
+    'payment',
+    'date_payment',
+    'email']))
   }
   validators.push(new EmailValidation('email', new EmailValidatorAdapter()))
   return new ValidatorComposite(validators)

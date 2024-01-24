@@ -6,12 +6,14 @@ export class CheckRequestValidator implements Validation {
   constructor(private readonly fields: string[]) {}
   validation(httpRequest: HttpRequest): Error | undefined {
     const keys = Object.keys(httpRequest.body)
+    const unnecessaryFields: string[] = []
     const invalidParams: string[] = [] 
     for(const key of keys) {
       if(!this.fields.includes(key)) {
         invalidParams.push(key)
+        unnecessaryFields.push(key)
       }
     }
-    return invalidParams.length > 0 ? new UnnecessaryParamsError() : undefined
+    return invalidParams.length > 0 ? new UnnecessaryParamsError(unnecessaryFields.toString()) : undefined
   }
 }

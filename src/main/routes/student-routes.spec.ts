@@ -37,7 +37,7 @@ describe('POST /add-student', () => {
 
   test('should return 401 if account exist', async () => {
     const student = makeFakeRequest()
-    await studentsCollection.insertOne(student.body)
+    await studentsCollection.insertOne({...student.body})
     await request(app).post('/api/add-student').send(student.body).expect(401)
   })
 

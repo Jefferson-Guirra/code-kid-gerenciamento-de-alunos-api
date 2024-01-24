@@ -1,6 +1,6 @@
 export class UnnecessaryParamsError extends Error {
-  constructor () {
-    super('Unnecessary')
+  constructor ( field: string) {
+    super(`Unnecessary (${field}) fields`)
     this.name = 'Unnecessary params Error'
 
   }
