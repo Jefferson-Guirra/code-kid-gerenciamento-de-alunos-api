@@ -1,3 +1,5 @@
+import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
+import { UpdateStudent } from '../../../../domain/usecases/student/update-student'
 import { MissingParamsError } from '../../../errors/missing-params-error'
 import { badRequest } from '../../../helpers/http/http'
 import { HttpRequest } from '../../../protocols/http'
@@ -7,12 +9,13 @@ import { UpdateStudentController} from './update-student-controller'
 
 const makeFakeRequest = (): HttpRequest => ({
   body:{
+    id: 'any_id',
     name: 'any_name',
-    age: 'any_number',
+    age: 0,
     father: 'any_father',
     mother:'any_mother',
-    phone: 'any_phone',
-    course: '[any_course]',
+    phone: 123456789,
+    course:['any_course'],
     payment: 'any_payment',
     date_payment: ['any_date'],
     email: 'any_email@mail.com',
@@ -22,8 +25,30 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 interface SutTypes {
+  updateStudentStub: UpdateStudent
   validatorStub: Validation
   sut: UpdateStudentController
+}
+
+const makeUpdateStudentStub = (): UpdateStudent => {
+  class UpdateStudentStub implements UpdateStudent {
+    async update (id: string, updateFields: any) : Promise<AddStudentModel | null> {
+      return await Promise.resolve({
+        id: 'any_id',
+        name: 'any_name',
+        age:15,
+        father: 'any_father',
+        mother:'any_mother',
+        phone: 123456789,
+        course: ['any_course'],
+        payment: 'any_payment',
+        date_payment: ['any_date'],
+        email: 'any_email@mail.com',
+        registration: 'active',
+      })
+    }
+  }
+  return new UpdateStudentStub()
 }
 
 const makeValidationStub  = (): Validation => {
@@ -37,8 +62,10 @@ const makeValidationStub  = (): Validation => {
 
 const makeSut = (): SutTypes => {
   const validatorStub = makeValidationStub()
-  const sut = new UpdateStudentController(validatorStub)
+  const updateStudentStub = makeUpdateStudentStub()
+  const sut = new UpdateStudentController(validatorStub, updateStudentStub)
   return {
+    updateStudentStub,
     validatorStub,
     sut
   }
@@ -58,5 +85,13 @@ describe('UpdateStudentController', () => {
     jest.spyOn(validatorStub, 'validation').mockReturnValueOnce(new MissingParamsError('any_field'))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
+  })
+
+  test('should call UpdateStudent with correct value', async () => {
+    const { sut, updateStudentStub } = makeSut()
+    const updateSpy = jest.spyOn(updateStudentStub, 'update')
+    await sut.handle(makeFakeRequest())
+    const {id, ...fields} = makeFakeRequest().body 
+    expect(updateSpy).toHaveBeenCalledWith(id, fields)
   })
 })
