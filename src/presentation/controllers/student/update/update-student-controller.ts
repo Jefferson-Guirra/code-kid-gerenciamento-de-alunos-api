@@ -1,5 +1,5 @@
 import { UpdateStudent } from '../../../../domain/usecases/student/update-student';
-import { badRequest, ok } from '../../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -18,6 +18,9 @@ export class UpdateStudentController implements Controller {
     }
     const {id, ...fields} = request.body
     const updateStudent = await this.updateStudent.update(id, fields)
+    if(!updateStudent){
+      return unauthorized()
+    }
     return ok('success')
   } 
 }
