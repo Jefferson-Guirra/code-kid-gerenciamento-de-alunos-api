@@ -1,7 +1,7 @@
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { UpdateStudent } from '../../../../domain/usecases/student/update-student'
 import { MissingParamsError } from '../../../errors/missing-params-error'
-import { badRequest } from '../../../helpers/http/http'
+import { badRequest, unauthorized } from '../../../helpers/http/http'
 import { HttpRequest } from '../../../protocols/http'
 import { Validation } from '../../../protocols/validation'
 import { UpdateStudentController} from './update-student-controller'
@@ -93,5 +93,12 @@ describe('UpdateStudentController', () => {
     await sut.handle(makeFakeRequest())
     const {id, ...fields} = makeFakeRequest().body 
     expect(updateSpy).toHaveBeenCalledWith(id, fields)
+  })
+
+  test('should return 401 if updateAccount return null', async () => {  
+    const { sut, updateStudentStub } = makeSut()
+    jest.spyOn(updateStudentStub, 'update').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 })
