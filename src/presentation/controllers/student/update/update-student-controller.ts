@@ -1,5 +1,5 @@
 import { UpdateStudent } from '../../../../domain/usecases/student/update-student';
-import { badRequest, ok, unauthorized } from '../../../helpers/http/http';
+import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -12,15 +12,20 @@ export class UpdateStudentController implements Controller {
   ){}
 
   async handle (request: HttpRequest): Promise<HttpResponse> {
-    const error = this.validator.validation(request)
-    if(error) {
-      return badRequest(error)
+    try{
+      const error = this.validator.validation(request)
+      if(error) {
+        return badRequest(error)
+      }
+      const {id, ...fields} = request.body
+      const updateStudent = await this.updateStudent.update(id, fields)
+      if(!updateStudent){
+        return unauthorized()
+      }
+      return ok('success')
     }
-    const {id, ...fields} = request.body
-    const updateStudent = await this.updateStudent.update(id, fields)
-    if(!updateStudent){
-      return unauthorized()
+    catch(err){
+      return serverError(err as Error)
     }
-    return ok('success')
   } 
 }
