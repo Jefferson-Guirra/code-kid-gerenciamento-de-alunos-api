@@ -5,8 +5,6 @@ import { UpdateStudentByIdRepository } from '../../../protocols/db/student/updat
 export class DbUpdateStudent implements UpdateStudent {
   constructor( private readonly updateStudentByIdRepository: UpdateStudentByIdRepository) {}
   async update (id: string, updateFields: any): Promise<AddStudentModel | null> {
-    await this.updateStudentByIdRepository.updateStudent(id, updateFields)
-    return null
-
+    return await this.updateStudentByIdRepository.updateStudent(id, updateFields)
   }
 }
