@@ -52,4 +52,10 @@ describe('DbUpdateStudent', () => {
     await sut.update('any_id', makeFakeRequest())
     expect(updateSpy).toHaveBeenCalledWith('any_id', makeFakeRequest())
   })
+  test('should return throw if UpdateStudentByIdRepository fails ', async () => {
+    const { sut, updateStudentByIdStub } = makeSut()
+    jest.spyOn(updateStudentByIdStub, 'updateStudent').mockReturnValueOnce(Promise.reject(new Error()))
+    const response = sut.update('any_id',makeFakeRequest())
+    await expect(response).rejects.toThrow()
+  })
 })
