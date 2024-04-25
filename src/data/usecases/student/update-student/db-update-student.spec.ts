@@ -63,6 +63,14 @@ describe('DbUpdateStudent', () => {
     await expect(response).rejects.toThrow()
   })
 
+  test('should return null if student not exist', async () => {
+    const { sut, updateStudentByIdStub } = makeSut()
+    jest.spyOn(updateStudentByIdStub, 'updateStudent').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.update('any_id', makeFakeRequest())
+    expect(response).toBeFalsy()
+
+  })
+
   test('should return UpdateStudent on succeeds', async () => {
     const {sut} = makeSut()
     const response = await sut.update('any_id',makeFakeRequest())
