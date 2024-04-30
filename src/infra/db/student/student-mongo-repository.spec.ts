@@ -107,5 +107,11 @@ describe('StudentMongoRepository', () => {
 
   })
 
+  test('should return null if updateStudent return null', async () => {
+    const sut = makeSut()
+    const updateStudent = await sut.updateStudent('663039d3ed41894a2fbdbae2',{phone: 1354})
+    expect(updateStudent).toBeFalsy()
+  })
+
 
 })
