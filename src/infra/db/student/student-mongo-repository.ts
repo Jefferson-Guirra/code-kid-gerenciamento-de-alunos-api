@@ -45,7 +45,7 @@ UpdateStudentByIdRepository {
     const studentCollection = await MongoHelper.getCollection('students')
     const updatedStudent = await studentCollection.findOneAndUpdate(
       { _id: new ObjectId(id)}, 
-      { $unset: updateFields}, 
+      { $set: {...updateFields}}, 
       { returnDocument: 'after'}
     )
     return updatedStudent.value && MongoHelper.Map(updatedStudent.value)
