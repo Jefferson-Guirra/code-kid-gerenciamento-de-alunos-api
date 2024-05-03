@@ -113,5 +113,20 @@ describe('StudentMongoRepository', () => {
     expect(updateStudent).toBeFalsy()
   })
 
+  test('should return updated student on succeeds', async () => { 
+    const sut = makeSut()
+    const addStudent = await studentsCollection.insertOne(makeFakeRequest())
+    const student = await sut.updateStudent(addStudent.insertedId.toString(), { name: 'random_name', phone:123456})
+    expect(student?.name).toEqual('random_name')
+    expect(student?.age).toBe(0)
+    expect(student?.id).toBeTruthy()
+    expect(student?.date_payment).toEqual(['any_date'])
+    expect(student?.father).toEqual('any_father')
+    expect(student?.mother).toEqual('any_mother')
+    expect(student?.registration).toEqual('active')
+    expect(student?.course).toEqual(['any_course'])
+    expect(student?.phone).toEqual(123456)
+  })
+
 
 })
