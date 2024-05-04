@@ -83,3 +83,20 @@ describe('DELETE /remove-student', () => {
 
   })
 })
+
+describe('PUT /update/student', () => { 
+  beforeAll(async () => {
+    await MongoHelper.connect(process.env.MONGO_URL as string)
+  })
+  beforeEach(async () => {
+    studentsCollection = await MongoHelper.getCollection('students')
+    studentsCollection.deleteMany({})
+  })
+  afterAll(async () => {
+    await MongoHelper.disconnect()
+  })
+
+  test('should return 401 if student not exist', async () => {
+    const body = await request(app).put('/api/update-student').send({ id: '663039d3ed41894a2fbdbae2', phone: 12345}).expect(401)
+  })
+})
