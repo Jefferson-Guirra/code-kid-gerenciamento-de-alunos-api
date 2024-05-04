@@ -10,6 +10,7 @@ describe('makeValidatorUpdateStudentFactory', () => {
     const validators: Validation[] = []
     makeValidatorUpdateStudentFactory()
     validators.push(new CheckRequestValidator([
+      'id',
       'registration',
       'name',
       'age',

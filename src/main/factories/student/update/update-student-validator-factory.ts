@@ -6,6 +6,7 @@ import { Validation } from '../../../../presentation/protocols/validation';
 export const makeValidatorUpdateStudentFactory = (): Validation => {
   const validators: Validation [] = []
   validators.push(new CheckRequestValidator([
+    'id',
     'registration',
     'name',
     'age',
