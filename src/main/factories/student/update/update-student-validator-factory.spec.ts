@@ -1,4 +1,5 @@
 import { CheckRequestValidator } from '../../../../presentation/helpers/validators/check-request-validator';
+import { RequiredFieldsValidator } from '../../../../presentation/helpers/validators/required-fields-validator';
 import { ValidatorComposite } from '../../../../presentation/helpers/validators/validator-composite';
 import { Validation } from '../../../../presentation/protocols/validation';
 import { makeValidatorUpdateStudentFactory } from './update-student-validator-factory';
@@ -20,6 +21,7 @@ describe('makeValidatorUpdateStudentFactory', () => {
       'date_payment',
       'email'
     ]))
+    validators.push(new RequiredFieldsValidator('id'))
     expect(ValidatorComposite).toHaveBeenCalledWith(validators)
 
   })
