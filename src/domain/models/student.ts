@@ -1,5 +1,6 @@
 export interface Student {
   name: string,
+  price: number,
   age: number,
   father: string
   mother:string,

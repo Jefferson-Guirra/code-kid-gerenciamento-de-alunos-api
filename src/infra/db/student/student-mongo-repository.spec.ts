@@ -5,6 +5,7 @@ import { Student } from '../../../domain/models/student'
 
 const makeFakeRequest = (): Student => ({
   name: 'any_name',
+  price: 0,
   age: 0,
   father: 'any_father',
   mother: 'any_mother',

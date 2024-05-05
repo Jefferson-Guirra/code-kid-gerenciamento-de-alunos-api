@@ -16,6 +16,7 @@ const makeFakeRequest = () => ({
 const updateStudentStub = (): AddStudentModel => ({
   id: 'any_id',
   name: 'any_name',
+  price: 0,
   age: 0,
   father: 'any_father',
   mother:'any_mother',

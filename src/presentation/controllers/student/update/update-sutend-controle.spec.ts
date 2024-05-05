@@ -35,6 +35,7 @@ const makeUpdateStudentStub = (): UpdateStudent => {
     async update (id: string, updateFields: any) : Promise<AddStudentModel | null> {
       return await Promise.resolve({
         id: 'any_id',
+        price: 0,
         name: 'any_name',
         age:15,
         father: 'any_father',

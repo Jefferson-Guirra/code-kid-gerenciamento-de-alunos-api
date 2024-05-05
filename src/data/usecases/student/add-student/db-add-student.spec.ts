@@ -7,6 +7,7 @@ import { DbAddStudentRepository } from './db-add-student';
 const makeFakeRequest = (): Student => ({
     name: 'any_name',
     age: 0,
+    price:0,
     father: 'any_father',
     mother: 'any_mother',
     phone: 0,

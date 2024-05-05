@@ -6,6 +6,7 @@ import { DbRemoveStudent } from './db-remove-student'
 const makeFakeAddStudentModel = (): AddStudentModel => ({
   name: 'any_name',
   age: 0,
+  price:0,
   email: 'any_email@mail.com',
   father: 'any_father',
   mother: 'any_mother',

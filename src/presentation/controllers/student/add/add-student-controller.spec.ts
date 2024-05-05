@@ -25,6 +25,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
   age: 0,
   father: 'any_father',
   mother: 'any_mother',
+  price: 0,
   phone: 0,
   course: ['any_course'],
   payment: 'yes',
