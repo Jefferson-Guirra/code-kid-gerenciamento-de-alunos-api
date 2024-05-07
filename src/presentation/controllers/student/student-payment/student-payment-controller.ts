@@ -1,5 +1,5 @@
 import { PaymentStudents } from '../../../../domain/usecases/student/payment-student';
-import { badRequest, ok, unauthorized } from '../../../helpers/http/http';
+import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -10,15 +10,19 @@ export class StudentPaymentController implements Controller {
     private readonly paymentStudents: PaymentStudents
   ){}
   async handle(request: HttpRequest): Promise<HttpResponse> {
-    const { payment } = request.body
-    const error = this.validator.validation(request)
-    if(error) {
-      return badRequest(error)
+    try {
+      const { payment } = request.body
+      const error = this.validator.validation(request)
+      if(error) {
+        return badRequest(error)
+      }
+      const students = await this.paymentStudents.getStudents(payment)
+      if(!students) {
+        return  unauthorized()
+      }
+      return ok('success')
+    } catch(err) {
+      return serverError(err as Error)
     }
-    const students = await this.paymentStudents.getStudents(payment)
-    if(!students) {
-      return  unauthorized()
-    }
-    return ok('success')
   }
 }
