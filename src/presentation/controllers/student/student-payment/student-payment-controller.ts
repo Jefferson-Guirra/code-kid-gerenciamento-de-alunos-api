@@ -1,5 +1,5 @@
 import { PaymentStudents } from '../../../../domain/usecases/student/payment-student';
-import { badRequest, ok } from '../../../helpers/http/http';
+import { badRequest, ok, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -15,7 +15,10 @@ export class StudentPaymentController implements Controller {
     if(error) {
       return badRequest(error)
     }
-    await this.paymentStudents.getStudents(payment)
+    const students = await this.paymentStudents.getStudents(payment)
+    if(!students) {
+      return  unauthorized()
+    }
     return ok('success')
   }
 }
