@@ -1,7 +1,7 @@
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
 import { PaymentStudents } from '../../../../domain/usecases/student/payment-student';
 import { MissingParamsError } from '../../../errors/missing-params-error';
-import { badRequest } from '../../../helpers/http/http';
+import { badRequest, unauthorized } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { StudentPaymentController } from './student-payment-controller';
@@ -83,5 +83,12 @@ describe('StudentPaymentController', () => {
     const getSpy = jest.spyOn(getPaymentStudentsStub, 'getStudents')
     await sut.handle(makeFakeRequest())
     expect(getSpy).toHaveBeenCalledWith('yes')
+  })
+
+  test('should return 401 if PaymentStudents return null', async () => {
+    const { sut, getPaymentStudentsStub } = makeSut()
+    jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 })
