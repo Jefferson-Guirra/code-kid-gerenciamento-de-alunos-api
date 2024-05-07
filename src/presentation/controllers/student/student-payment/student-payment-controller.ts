@@ -20,7 +20,7 @@ export class StudentPaymentController implements Controller {
       if(!students) {
         return  unauthorized()
       }
-      return ok('success')
+      return ok(students)
     } catch(err) {
       return serverError(err as Error)
     }
