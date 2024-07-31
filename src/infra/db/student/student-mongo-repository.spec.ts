@@ -18,7 +18,7 @@ const makeFakeRequest = (): Student => ({
   date_payment: ['any_date']
 })
 
-const makeAddIdsStudents = (id: string): AddStudentModel => ({
+const makeAddIdsStudents = (id: string, payment: string): AddStudentModel => ({
   name: 'any_name',
   price: 0,
   age: 0,
@@ -27,7 +27,7 @@ const makeAddIdsStudents = (id: string): AddStudentModel => ({
   mother: 'any_mother',
   phone: 0,
   course: ['any_course'],
-  payment: 'yes',
+  payment,
   registration: 'active',
   email: 'any_email@mail.com',
   date_payment: ['any_date']
@@ -148,9 +148,17 @@ describe('StudentMongoRepository', () => {
   test('should return payment students', async () => {
     const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), makeFakeRequest()])
     const sut = makeSut()
-    const studentsArray = [{...makeAddIdsStudents( insertedIds[0].toString()) },{...makeAddIdsStudents(insertedIds[1].toString())} ]
+    const studentsArray = [{...makeAddIdsStudents( insertedIds[0].toString(), 'yes') },{...makeAddIdsStudents(insertedIds[1].toString(), 'yes')} ]
     const response = await sut.getPaymentStudents('yes')
     expect(response).toHaveLength(studentsArray.length)
+    expect(response).toEqual(studentsArray)
+  })
+
+  test('should return debtors students', async () => {
+    const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
+    const sut = makeSut()
+    const studentsArray = [ {...makeAddIdsStudents(insertedIds[1].toString(), 'not')} ]
+    const response = await sut.getPaymentStudents('not')
     expect(response).toEqual(studentsArray)
   })
 })
