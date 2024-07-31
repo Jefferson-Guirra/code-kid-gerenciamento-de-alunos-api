@@ -61,4 +61,11 @@ describe('DbGetPaymentStudents', () => {
     const response  = await sut.getStudents('yes')
     expect(response).toBeFalsy()
   })
+
+  test('should return throw if getPaymentStudentsRepository fails', async () => { 
+    const { sut, getPaymentStudentsRepositoryStub } = makeSut()
+    jest.spyOn(getPaymentStudentsRepositoryStub, 'getPaymentStudents').mockReturnValueOnce(Promise.reject(new Error()))
+    const promise = sut.getStudents('yes')
+    await expect(promise).rejects.toThrow()
+  })
 })
