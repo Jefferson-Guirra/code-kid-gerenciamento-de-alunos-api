@@ -7,13 +7,15 @@ import { AddStudentModel } from '../../../domain/usecases/student/add-student';
 import { MongoHelper } from '../helpers/mongo-helper';
 import { RemoveStudentByIdRepository } from '../../../data/protocols/db/student/remove-student-by-id-repository';
 import { UpdateStudentByIdRepository } from '../../../data/protocols/db/student/update-student-by-id-repository';
+import { getPaymentStudentsRepository } from '../../../data/protocols/db/student/get-payment-students-repository';
 
 export class StudentMongoRepository implements 
 AddStudentRepository,
 LoadStudentByNameRepository,
 LoadStudentByIdRepository,
 RemoveStudentByIdRepository,
-UpdateStudentByIdRepository {
+UpdateStudentByIdRepository,
+getPaymentStudentsRepository {
   async add(student: Student): Promise<AddStudentModel | null> {
     const studentCollections = await MongoHelper.getCollection('students')
     const result = await studentCollections.insertOne(student)
@@ -49,6 +51,12 @@ UpdateStudentByIdRepository {
       { returnDocument: 'after'}
     )
     return updatedStudent.value && MongoHelper.Map(updatedStudent.value)
+  }
+
+  async getPaymentStudents ( payment: string): Promise<AddStudentModel[] | null> {
+    const studentsCollection = await MongoHelper.getCollection('students')
+    const students = await studentsCollection.find({payment}).toArray()
+    return students && students.map(student => MongoHelper.Map(student))
   }
 
 
