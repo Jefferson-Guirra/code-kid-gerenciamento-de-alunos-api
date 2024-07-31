@@ -56,7 +56,7 @@ getPaymentStudentsRepository {
   async getPaymentStudents ( payment: string): Promise<AddStudentModel[] | null> {
     const studentsCollection = await MongoHelper.getCollection('students')
     const students = await studentsCollection.find({payment}).toArray()
-    return students && students.map(student => MongoHelper.Map(student))
+    return students.length === 0 ? null : students.map(student => MongoHelper.Map(student))
   }
 
 
