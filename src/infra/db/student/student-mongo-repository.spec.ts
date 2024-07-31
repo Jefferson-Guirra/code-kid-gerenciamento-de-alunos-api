@@ -1,13 +1,29 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { StudentMongoRepository } from './student-mongo-repository'
 import { Student } from '../../../domain/models/student'
+import { AddStudentModel } from '../../../domain/usecases/student/add-student'
 
 const makeFakeRequest = (): Student => ({
   name: 'any_name',
   price: 0,
   age: 0,
   father: 'any_father',
+  mother: 'any_mother',
+  phone: 0,
+  course: ['any_course'],
+  payment: 'yes',
+  registration: 'active',
+  email: 'any_email@mail.com',
+  date_payment: ['any_date']
+})
+
+const makeAddIdsStudents = (id: string): AddStudentModel => ({
+  name: 'any_name',
+  price: 0,
+  age: 0,
+  father: 'any_father',
+  id: id,
   mother: 'any_mother',
   phone: 0,
   course: ['any_course'],
@@ -129,5 +145,12 @@ describe('StudentMongoRepository', () => {
     expect(student?.phone).toEqual(123456)
   })
 
-
+  test('should return payment students', async () => {
+    const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), makeFakeRequest()])
+    const sut = makeSut()
+    const studentsArray = [{...makeAddIdsStudents( insertedIds[0].toString()) },{...makeAddIdsStudents(insertedIds[1].toString())} ]
+    const response = await sut.getPaymentStudents('yes')
+    expect(response).toHaveLength(studentsArray.length)
+    expect(response).toEqual(studentsArray)
+  })
 })
