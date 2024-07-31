@@ -161,4 +161,12 @@ describe('StudentMongoRepository', () => {
     const response = await sut.getPaymentStudents('not')
     expect(response).toEqual(studentsArray)
   })
+
+  test('should return null if getPaymentStudents fails', async () => {
+    const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
+    const sut = makeSut()
+    const response = await sut.getPaymentStudents('no')
+    expect(!![]).toBeTruthy()
+    expect(response).toBeFalsy()
+  })
 })
