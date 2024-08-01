@@ -23,7 +23,7 @@ const makeFakeStudent  = (): AddStudentModel => ({
 
 const makeGetPaymentStudents = (): PaymentStudents => {
   class GetPaymentStudents implements PaymentStudents {
-    async getStudents (payment: string): Promise<AddStudentModel[] | null> {
+    async getStudents (payment?: string): Promise<AddStudentModel[] | null> {
       return Promise.resolve([makeFakeStudent(), makeFakeStudent()])
 
     }
@@ -85,18 +85,18 @@ describe('StudentPaymentController', () => {
     expect(getSpy).toHaveBeenCalledWith('yes')
   })
 
-  test('should return 401 if PaymentStudents return null', async () => {
-    const { sut, getPaymentStudentsStub } = makeSut()
-    jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.resolve(null))
-    const response = await sut.handle(makeFakeRequest())
-    expect(response).toEqual(unauthorized())
-  })
-
   test('should return 500 if PaymentStudents return throw ', async () => {
     const { sut, getPaymentStudentsStub } =makeSut()
     jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.reject(new Error('')))
     const response = await sut.handle(makeFakeRequest())
     expect(response).toEqual(serverError(new Error()))
+  })
+
+  test('should return 200 not body request', async () => {
+    const { sut, getPaymentStudentsStub } = makeSut()
+    jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.resolve([]))
+    const response = await sut.handle({ body: null})
+    expect(response).toEqual(ok([]))
   })
 
   test('should return 200 on succeeds', async () => {
