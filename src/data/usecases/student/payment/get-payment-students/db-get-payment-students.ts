@@ -8,7 +8,7 @@ export class DbGetPaymentStudents implements PaymentStudents {
   ) {
 
   }
-  async getStudents (payment: string): Promise<AddStudentModel[] | null> {
+  async getStudents (payment?: string): Promise<AddStudentModel[] | null> {
     return await this.paymentStudents.getPaymentStudents(payment)
   }
 }

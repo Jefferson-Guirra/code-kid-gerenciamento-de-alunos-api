@@ -21,7 +21,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
 
 const makeGetPaymentStudentsRepositoryStub = (): getPaymentStudentsRepository => {
   class getPaymentStudentsRepositoryStub implements getPaymentStudentsRepository {
-    async getPaymentStudents (payment: string): Promise<AddStudentModel[] | null> {
+    async getPaymentStudents (payment?: string): Promise<AddStudentModel[] | null> {
       const fakeAddStudentModel = [makeFakeAddStudentModel(), makeFakeAddStudentModel()]
       return await Promise.resolve(fakeAddStudentModel)
     }
