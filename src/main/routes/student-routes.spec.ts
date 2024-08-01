@@ -100,3 +100,23 @@ describe('PUT /update/student', () => {
     const body = await request(app).put('/api/update-student').send({ id: '663039d3ed41894a2fbdbae2', phone: 12345}).expect(401)
   })
 })
+
+
+describe('Get /payment-students', () => { 
+  beforeAll(async () => {
+    await MongoHelper.connect(process.env.MONGO_URL as string)
+  })
+  beforeEach(async () => {
+    studentsCollection = await MongoHelper.getCollection('students')
+    await studentsCollection.deleteMany({})
+  })
+  afterAll(async() => {
+    await MongoHelper.disconnect()
+
+  })
+
+  test('should return 200 on success', async () => { 
+    await studentsCollection.insertOne(makeFakeRequest().body)
+    await request(app).post('/api/get-payment-students').send({ payment: 'yes'}).expect(200)
+  })
+})
