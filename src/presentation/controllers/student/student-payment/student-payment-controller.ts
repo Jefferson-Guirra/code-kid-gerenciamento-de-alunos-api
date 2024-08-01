@@ -11,15 +11,22 @@ export class StudentPaymentController implements Controller {
   ){}
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const { payment } = request.body
+      let students
+      const body = request.body
       const error = this.validator.validation(request)
       if(error) {
         return badRequest(error)
       }
-      const students = await this.paymentStudents.getStudents(payment)
-      if(!students) {
-        return  unauthorized()
+
+      if(!body) {
+        students = await this.paymentStudents.getStudents()
+        return ok(students)
       }
+      if(body.payment) {
+        students = await this.paymentStudents.getStudents(body.payment)
+        return ok(students)
+      }
+
       return ok(students)
     } catch(err) {
       return serverError(err as Error)
