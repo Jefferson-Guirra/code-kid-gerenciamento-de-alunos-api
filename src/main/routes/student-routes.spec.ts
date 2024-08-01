@@ -125,4 +125,9 @@ describe('Get /payment-students', () => {
     await studentsCollection.insertOne(makeFakeRequest().body)
     await request(app).post('/api/get-payment-students').send({ payment: 'yes'}).expect(200)
   })
+
+  test('should return 400 in badRequest', async () => { 
+    await studentsCollection.insertOne(makeFakeRequest().body)
+    await request(app).post('/api/get-payment-students').send({ id: 'any_id'}).expect(400)
+  })
 })
