@@ -53,10 +53,10 @@ getPaymentStudentsRepository {
     return updatedStudent.value && MongoHelper.Map(updatedStudent.value)
   }
 
-  async getPaymentStudents ( payment: string): Promise<AddStudentModel[] | null> {
+  async getPaymentStudents ( payment?: string): Promise<AddStudentModel[] | null> {
     const studentsCollection = await MongoHelper.getCollection('students')
-    const students = await studentsCollection.find({payment}).toArray()
-    return students.length === 0 ? null : students.map(student => MongoHelper.Map(student))
+    const students = payment ? await studentsCollection.find({payment}).toArray()  : await studentsCollection.find({undefined}).toArray()
+    return students.map(student => MongoHelper.Map(student))
   }
 
 
