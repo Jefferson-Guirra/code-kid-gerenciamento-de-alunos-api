@@ -99,6 +99,12 @@ describe('PUT /update/student', () => {
   test('should return 401 if student not exist', async () => {
     const body = await request(app).put('/api/update-student').send({ id: '663039d3ed41894a2fbdbae2', phone: 12345}).expect(401)
   })
+
+  test('should return 200 on success', async () => {
+    const { insertedId } = await studentsCollection.insertOne(makeFakeRequest().body)
+    await request(app).put('/api/update-student').send({ id: insertedId.toString(), phone: 12345}).expect(200)
+
+  })
 })
 
 
