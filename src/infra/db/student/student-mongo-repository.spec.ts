@@ -18,16 +18,16 @@ const makeFakeRequest = (): Student => ({
   date_payment: ['any_date']
 })
 
-const makeAddIdsStudents = (id: string, payment: string): AddStudentModel => ({
+const makeAddIdsStudents = (id: ObjectId, payment?: string): AddStudentModel => ({
   name: 'any_name',
   price: 0,
   age: 0,
   father: 'any_father',
-  id: id,
+  id: id.toString(),
   mother: 'any_mother',
   phone: 0,
   course: ['any_course'],
-  payment,
+  payment: payment ? payment : 'undefined',
   registration: 'active',
   email: 'any_email@mail.com',
   date_payment: ['any_date']
@@ -148,16 +148,16 @@ describe('StudentMongoRepository', () => {
   test('should return payment students', async () => {
     const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), makeFakeRequest()])
     const sut = makeSut()
-    const studentsArray = [{...makeAddIdsStudents( insertedIds[0].toString(), 'yes') },{...makeAddIdsStudents(insertedIds[1].toString(), 'yes')} ]
+    const studentsArray = [{...makeAddIdsStudents( insertedIds[0], 'yes') },{...makeAddIdsStudents(insertedIds[1], 'yes')} ]
     const response = await sut.getPaymentStudents('yes')
     expect(response).toHaveLength(studentsArray.length)
     expect(response).toEqual(studentsArray)
   })
 
   test('should return debtors students', async () => {
-    const { insertedIds } = await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
+    const { insertedIds : id } = await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
     const sut = makeSut()
-    const studentsArray = [ {...makeAddIdsStudents(insertedIds[1].toString(), 'not')} ]
+    const studentsArray = [ {...makeAddIdsStudents(id[1], 'not')} ]
     const response = await sut.getPaymentStudents('not')
     expect(response).toEqual(studentsArray)
   })
@@ -166,7 +166,14 @@ describe('StudentMongoRepository', () => {
     await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
     const sut = makeSut()
     const response = await sut.getPaymentStudents('no')
-    expect(!![]).toBeTruthy()
-    expect(response).toBeFalsy()
+    expect(response).toEqual([])
+  })
+
+  test('should return all students if  call getPaymentStudents with undefined value', async () => {
+    const { insertedIds : id } = await studentsCollection.insertMany([makeFakeRequest(), {...makeFakeRequest(), payment: 'not'} ])
+    const studentsArray = [ {...makeAddIdsStudents(id[0], 'yes')}, { ...makeAddIdsStudents(id[1], 'not')}]
+    const sut = makeSut()
+    const response = await sut.getPaymentStudents()
+    expect(response).toEqual( studentsArray )
   })
 })
