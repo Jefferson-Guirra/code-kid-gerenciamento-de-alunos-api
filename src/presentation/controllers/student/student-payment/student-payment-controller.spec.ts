@@ -95,7 +95,7 @@ describe('StudentPaymentController', () => {
   test('should return 200 not body request', async () => {
     const { sut, getPaymentStudentsStub } = makeSut()
     jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.resolve([]))
-    const response = await sut.handle({ body: null})
+    const response = await sut.handle({ body: { payment: null}})
     expect(response).toEqual(ok([]))
   })
 
