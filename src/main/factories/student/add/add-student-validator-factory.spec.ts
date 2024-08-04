@@ -44,7 +44,8 @@ describe('makeAddStudentValidatorFactory', () => {
         'course',
         'payment',
         'date_payment',
-        'email'
+        'email',
+        'accessToken'
     ]))
     }
     validators.push(new EmailValidation('email', makeEmailValidatorStub()))

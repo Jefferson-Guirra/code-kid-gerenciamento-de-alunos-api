@@ -30,7 +30,9 @@ export const makeAddStudentValidatorFactory = (): Validation => {
     'course',
     'payment',
     'date_payment',
-    'email']))
+    'email',
+    'accessToken'
+  ]))
   }
   validators.push(new EmailValidation('email', new EmailValidatorAdapter()))
   return new ValidatorComposite(validators)
