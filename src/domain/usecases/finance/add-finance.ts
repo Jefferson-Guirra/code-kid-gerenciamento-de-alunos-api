@@ -6,5 +6,5 @@ export interface AddFinanceModel extends Finance {
 
 
 export interface AddFinance {
-  addFinance: (finance: Finance) => AddFinanceModel
+  addFinance: (finance: Finance) => Promise<AddFinanceModel | null>
 }

@@ -17,8 +17,8 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 const makeAddFinanceStub = (): AddFinance => {
   class AddFinanceStub implements AddFinance {
-    addFinance (finance: Finance): AddFinanceModel {
-      return {...makeFakeFinance(), id: 'any_id'}
+    async addFinance (finance: Finance): Promise<AddFinanceModel | null> {
+      return await Promise.resolve({...makeFakeFinance(), id: 'any_id'})
 
     }
   }
@@ -42,7 +42,7 @@ const makeSut = (): SutTypes => {
 } 
 
 describe('AddFinanceController', () => { 
-  
+
   test('should call AddFinance with correct values', async () => { 
     const { sut, addFinanceStub } = makeSut()
     const addSpy = jest.spyOn(addFinanceStub, 'addFinance')
