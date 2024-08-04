@@ -1,6 +1,7 @@
 import { Finance } from '../../../../domain/models/finance';
 import { AddFinance, AddFinanceModel } from '../../../../domain/usecases/finance/add-finance';
 import { HttpRequest } from '../../../protocols/http';
+import { Validation } from '../../../protocols/validation';
 import { AddFinanceController } from './add-finance-controller';
 
 const makeFakeFinance = (): Finance => ({
@@ -26,18 +27,31 @@ const makeAddFinanceStub = (): AddFinance => {
   return new AddFinanceStub()
 } 
 
+const makeValidatorStub = (): Validation => {
+  class ValidatorStub implements Validation {
+    validation (httpRequest: HttpRequest): Error | undefined {
+      return undefined
+
+    }
+  }
+  return new ValidatorStub()
+}
+
 interface SutTypes {
+  validationStub: Validation
   addFinanceStub: AddFinance
   sut: AddFinanceController
 }
 
 const makeSut = (): SutTypes => {
+  const validationStub = makeValidatorStub()
   const addFinanceStub = makeAddFinanceStub()
-  const sut = new AddFinanceController(addFinanceStub)
+  const sut = new AddFinanceController(validationStub,addFinanceStub)
 
   return {
-    addFinanceStub, 
-    sut
+    sut,
+    validationStub,
+    addFinanceStub
   }
 } 
 
@@ -48,6 +62,13 @@ describe('AddFinanceController', () => {
     const addSpy = jest.spyOn(addFinanceStub, 'addFinance')
     await sut.handle(makeFakeRequest())
     expect(addSpy).toHaveBeenCalledWith(makeFakeFinance())
+  })
+
+  test('should call Validator with correct values', async () => { 
+    const { sut, validationStub } = makeSut()
+    const validatorSpy = jest.spyOn(validationStub, 'validation')
+    await sut.handle(makeFakeRequest())
+    expect(validatorSpy).toHaveBeenCalledWith(makeFakeRequest())
   })
 
  })
