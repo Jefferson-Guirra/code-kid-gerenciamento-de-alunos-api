@@ -11,8 +11,11 @@ export class DbAddStudentRepository implements AddStudent {
     ) {}
   async add(student: UserAddStudent): Promise<AddStudentModel | null> {
     const { name, accessToken,...rest } = student
-    await this.loadAccount.loadByAccessToken(accessToken)
-    const loadStudent = await this.loadStudent.loadByName(name)   
+    const account = await this.loadAccount.loadByAccessToken(accessToken)
+    if(!account) {
+      return null
+    }
+    const loadStudent = await this.loadStudent.loadByName(name)  
     if(loadStudent) {
       return null
     }
