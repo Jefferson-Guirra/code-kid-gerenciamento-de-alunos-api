@@ -1,16 +1,18 @@
-import { Student } from '../../../../domain/models/student';
-import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
+import { AddStudent, AddStudentModel, UserAddStudent } from '../../../../domain/usecases/student/add-student';
+import { LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository';
 import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
 import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
 
 export class DbAddStudentRepository implements AddStudent {
   constructor ( 
+    private readonly loadAccount: LoadAccountByAccessTokenRepository,
     private readonly loadStudent: LoadStudentByNameRepository,
     private readonly addStudentRepository: AddStudentRepository
     ) {}
-  async add(student: Student): Promise<AddStudentModel | null> {
-    const { name } = student
-    const loadStudent = await this.loadStudent.loadByName(name)
+  async add(student: UserAddStudent): Promise<AddStudentModel | null> {
+    const { name, accessToken,...rest } = student
+    await this.loadAccount.loadByAccessToken(accessToken)
+    const loadStudent = await this.loadStudent.loadByName(name)   
     if(loadStudent) {
       return null
     }
