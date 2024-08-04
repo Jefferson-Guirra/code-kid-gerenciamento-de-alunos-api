@@ -1,5 +1,5 @@
 import { AddFinance } from '../../../../domain/usecases/finance/add-finance';
-import { badRequest, ok } from '../../../helpers/http/http';
+import { badRequest, ok, serverError } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -10,12 +10,17 @@ export class AddFinanceController implements Controller {
     private readonly finance: AddFinance
   ) {}
   async handle (request: HttpRequest): Promise<HttpResponse> {
-    const error = this.validator.validation(request)
-    if(error) {
-      return badRequest(error)
+    try {
+      const error = this.validator.validation(request)
+      if(error) {
+        return badRequest(error)
+      }
+      const body = request.body
+      await this.finance.addFinance(body)
+      return ok('ok')
     }
-    const body = request.body
-    await this.finance.addFinance(body)
-    return ok('ok')
+    catch(err) {
+      return serverError(err as Error)
+    }
   }
 }
