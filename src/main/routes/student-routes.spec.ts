@@ -6,6 +6,17 @@ import app from '../config/app';
 
 
 let studentsCollection: Collection
+let accountsCollection: Collection
+
+const dbInsertAccount= async () => {
+  await accountsCollection.insertOne({
+    username: 'any_username',
+    email: 'any_email@mail.com',
+    password: 'any_password',
+    privateKey: 'any_key',
+    accessToken: 'any_token'
+  })
+}
 
 const makeFakeRequest = (): HttpRequest => ({
   body:{
@@ -29,6 +40,7 @@ describe('POST /add-student', () => {
   })
   beforeEach(async () => {
     studentsCollection = await MongoHelper.getCollection('students')
+    accountsCollection = await MongoHelper.getCollection('accounts')
     await studentsCollection.deleteMany({})
   })
   afterAll(async () => {
@@ -36,13 +48,16 @@ describe('POST /add-student', () => {
   })
 
   test('should return 401 if account exist', async () => {
+
     const student = makeFakeRequest()
     await studentsCollection.insertOne({...student.body})
     await request(app).post('/api/add-student').send(student.body).expect(401)
   })
 
   test('should return 200 on succeeds', async () => {
-    await request(app).post('/api/add-student').send(makeFakeRequest().body).expect(200)
+    await dbInsertAccount()
+    const fakeRequest = {accessToken: 'any_token', ...makeFakeRequest().body}
+    await request(app).post('/api/add-student').send(fakeRequest).expect(200)
   })
 
   test('should return 400 in bad request', async () => {
