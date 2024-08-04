@@ -85,6 +85,14 @@ describe('DbAddStudentRepository', () => {
     await sut.add(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_token')
   })
+
+  test('should return null if LoadAccountByAccessToken fails',  async () => {
+    const { sut, loadAccountStub } = makeSut()
+    jest.spyOn(loadAccountStub,  'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.add(makeFakeRequest())
+    expect(response).toBeFalsy()
+  })
+
   test('should call LoadStudent with correct name', async () => {
     const { sut, loadStudentStub } = makeSut()
     const loadSpy = jest.spyOn(loadStudentStub, 'loadByName')
