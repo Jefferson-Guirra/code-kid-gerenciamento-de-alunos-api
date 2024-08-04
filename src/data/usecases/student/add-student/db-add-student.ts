@@ -19,7 +19,7 @@ export class DbAddStudentRepository implements AddStudent {
     if(loadStudent) {
       return null
     }
-    const newStudent = await this.addStudentRepository.add(student)
+    const newStudent = await this.addStudentRepository.add({name, ...rest})
     return newStudent
   }
 }
