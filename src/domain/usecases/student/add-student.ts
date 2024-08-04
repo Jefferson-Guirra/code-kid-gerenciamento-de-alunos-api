@@ -4,6 +4,10 @@ export interface AddStudentModel  extends Student{
   id: string
 }
 
+export interface UserAddStudent extends Student {
+  accessToken: string
+}
+
 export interface AddStudent {
-  add: (student: Student) => Promise<AddStudentModel | null>
+  add: (student: UserAddStudent) => Promise<AddStudentModel | null>
 }
