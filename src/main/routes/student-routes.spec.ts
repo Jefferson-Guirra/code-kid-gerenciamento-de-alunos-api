@@ -9,7 +9,7 @@ let studentsCollection: Collection
 let accountsCollection: Collection
 
 const dbInsertAccount= async () => {
-  await accountsCollection.insertOne({
+  return await accountsCollection.insertOne({
     username: 'any_username',
     email: 'any_email@mail.com',
     password: 'any_password',
@@ -80,7 +80,9 @@ describe('DELETE /remove-student', () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
   beforeEach(async () => {
+    accountsCollection = await MongoHelper.getCollection('accounts')
     studentsCollection = await MongoHelper.getCollection('students')
+    accountsCollection.deleteMany({})
     studentsCollection.deleteMany({})
   })
   afterAll(async () => {
@@ -93,8 +95,9 @@ describe('DELETE /remove-student', () => {
   })
 
   test('should return 200 on success', async () => {
+    await dbInsertAccount()
     const result = await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).delete('/api/remove-student').send({id: result.insertedId.toString()}).expect(400)
+    await request(app).delete('/api/remove-student').send({accessToken: 'any_token',id: result.insertedId.toString()}).expect(200)
 
 
   })
