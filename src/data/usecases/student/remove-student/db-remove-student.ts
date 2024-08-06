@@ -10,7 +10,10 @@ export class DbRemoveStudent implements RemoveStudent {
     private readonly removeStudent: RemoveStudentByIdRepository
     ) {}
   async remove(accessToken: string ,id: string): Promise<'removed' | null> {
-    await this.loadAccount.loadByAccessToken(accessToken)
+    const account = await this.loadAccount.loadByAccessToken(accessToken)
+    if(!account) {
+      return null
+    }
     const student = await this.loadStudent.loadById(id)
     if(!student) {
       return null
