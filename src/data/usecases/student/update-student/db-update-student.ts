@@ -10,7 +10,11 @@ export class DbUpdateStudent implements UpdateStudent {
   ) {}
   async update (id: string, updateFields: any): Promise<AddStudentModel | null> {
     const {accessToken, ...fields} = updateFields 
-    this.loadAccount.loadByAccessToken(accessToken)
+    const account = await this.loadAccount.loadByAccessToken(accessToken)
+    
+    if(!account) {
+      return null
+    }
     return await this.updateStudentByIdRepository.updateStudent(id, fields)
   }
 }
