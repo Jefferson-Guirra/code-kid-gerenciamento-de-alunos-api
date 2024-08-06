@@ -20,9 +20,11 @@ describe('makeValidatorUpdateStudentFactory', () => {
       'course',
       'payment',
       'date_payment',
-      'email'
+      'email', 
+      'accessToken'
     ]))
     validators.push(new RequiredFieldsValidator('id'))
+    validators.push(new RequiredFieldsValidator('accessToken'))
     expect(ValidatorComposite).toHaveBeenCalledWith(validators)
 
   })
