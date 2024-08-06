@@ -15,8 +15,8 @@ export class RemoveStudentController implements Controller {
       if(error) {
         return badRequest(error)
       }
-      const { id } = request.body
-      const response = await this.removeStudent.remove(id)
+      const { accessToken, id } = request.body
+      const response = await this.removeStudent.remove(accessToken,id)
       if(!response) {
         return unauthorized()
       }
