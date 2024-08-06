@@ -1,3 +1,3 @@
 export interface RemoveStudent {
-  remove: (id: string) => Promise<'removed' | null>
+  remove: (accessToken: string ,id: string) => Promise<'removed' | null>
 }
