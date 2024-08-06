@@ -16,8 +16,10 @@ export const makeValidatorUpdateStudentFactory = (): Validation => {
     'course',
     'payment',
     'date_payment',
-    'email'
+    'email',
+    'accessToken'
   ]))
   validators.push(new RequiredFieldsValidator('id'))
+  validators.push(new RequiredFieldsValidator('accessToken'))
   return new ValidatorComposite(validators)
 }
