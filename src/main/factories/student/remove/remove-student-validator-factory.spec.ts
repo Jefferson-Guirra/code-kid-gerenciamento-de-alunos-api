@@ -8,7 +8,9 @@ jest.mock('../../../../presentation/helpers/validators/validator-composite')
 describe('makeRemoveStudentValidatorFactory', () => {
   test('should call validatorComposite with correct validators', () => {
     const validators: Validation[] = []
-    validators.push(new RequiredFieldsValidator('id'))
+    for (const field of ['id', 'accessToken']) {
+      validators.push(new RequiredFieldsValidator(field))
+    }
     validators.push(new CheckRequestValidator(['id', 'accessToken']))
     makeRemoveStudentValidatorFactory()
     expect(ValidatorComposite).toHaveBeenCalledWith(validators)
