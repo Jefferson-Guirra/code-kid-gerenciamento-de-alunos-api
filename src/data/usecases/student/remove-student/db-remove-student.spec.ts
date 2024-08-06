@@ -92,6 +92,14 @@ describe('DbRemoveStudent', () => {
     const response  = await sut.remove('any_token','any_id')
     expect(response).toBeFalsy()
   })
+
+  test('should return throw if LoadAccount fails ', async () => {
+    const { sut, loadAccountStub } = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.reject(new Error()))
+    const response  = sut.remove('any_token','any_id')
+   await  expect(response).rejects.toThrow()
+  })
+
   test('should call LoadStudent wit correct id', async () => {
     const { sut, loadStudentStub } = makeSut()
     const loadSpy = jest.spyOn(loadStudentStub, 'loadById')
