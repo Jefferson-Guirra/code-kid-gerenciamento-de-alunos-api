@@ -82,7 +82,14 @@ describe('DbUpdateStudent', () => {
     await sut.update('any_id', makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_token')
   })
-
+  
+  test('should return null if LoadAccountByAccessTokenRepository fails ', async () => {
+    const { sut, loadAccountStub } = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.update('any_id',makeFakeRequest())
+    expect(response).toBeFalsy()
+  })
+  
   test('should call UpdateStudentByIdRepository with correct values', async () => { 
     const { sut, updateStudentByIdStub } = makeSut()
     const updateSpy = jest.spyOn(updateStudentByIdStub, 'updateStudent')
@@ -90,6 +97,7 @@ describe('DbUpdateStudent', () => {
     await sut.update('any_id', fields)
     expect(updateSpy).toHaveBeenCalledWith(id, fields)
   })
+
 
   test('should return throw if UpdateStudentByIdRepository fails ', async () => {
     const { sut, updateStudentByIdStub } = makeSut()
