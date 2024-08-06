@@ -109,19 +109,22 @@ describe('PUT /update/student', () => {
   })
   beforeEach(async () => {
     studentsCollection = await MongoHelper.getCollection('students')
+    accountsCollection = await MongoHelper.getCollection('accounts') 
+    accountsCollection.deleteMany({})
     studentsCollection.deleteMany({})
   })
   afterAll(async () => {
     await MongoHelper.disconnect()
   })
 
-  test('should return 401 if student not exist', async () => {
-    const body = await request(app).put('/api/update-student').send({ id: '663039d3ed41894a2fbdbae2', phone: 12345}).expect(401)
+  test('should return 400 on badRequest', async () => {
+    await request(app).put('/api/update-student').send({ id: '663039d3ed41894a2fbdbae2', phone: 12345}).expect(400)
   })
 
   test('should return 200 on success', async () => {
+    await dbInsertAccount()
     const { insertedId } = await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).put('/api/update-student').send({ id: insertedId.toString(), phone: 12345}).expect(200)
+    await request(app).put('/api/update-student').send({ id: insertedId.toString(), phone: 12345, accessToken: 'any_token'}).expect(200)
 
   })
 })
