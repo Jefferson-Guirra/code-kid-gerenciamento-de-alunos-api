@@ -8,6 +8,7 @@ import { RemoveStudentController } from './remove-student-controller';
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
+    accessToken: 'any_token',
     id: 'any_id'
   }
 })
@@ -61,11 +62,11 @@ describe('RemoveStudentController', () => {
     expect(response).toEqual(badRequest(new MissingParamsError('any_field')))
   })
 
-  test('should call RemoveStudent with correct id', async () => {
+  test('should call RemoveStudent with correct values', async () => {
     const { sut, removeStudentStub } = makeSut()
     const removeSpy = jest.spyOn(removeStudentStub, 'remove')
     await sut.handle(makeFakeRequest())
-    expect(removeSpy).toHaveBeenCalledWith('any_id')
+    expect(removeSpy).toHaveBeenCalledWith( 'any_token','any_id')
   })
 
   test('should return 401 if RemoveStudent student return null', async () => {
