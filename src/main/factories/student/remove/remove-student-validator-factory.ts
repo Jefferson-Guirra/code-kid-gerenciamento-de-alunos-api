@@ -5,7 +5,11 @@ import { Validation } from '../../../../presentation/protocols/validation';
 
 export const makeRemoveStudentValidatorFactory = (): Validation => {
   const validators: Validation[] = []
-  validators.push(new RequiredFieldsValidator('id'))
+
+  for (const field of ['id', 'accessToken']) {
+    validators.push(new RequiredFieldsValidator(field))
+  }
+  
   validators.push(new CheckRequestValidator(['id', 'accessToken']))
   return new ValidatorComposite(validators) 
 }
