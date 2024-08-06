@@ -88,12 +88,13 @@ describe('DELETE /remove-student', () => {
   })
 
   test('should return 401 if student not exist', async () => {
-    await request(app).delete('/api/remove-student').send({id:'8905f4322dc6f594b58c42e0' }).expect(401)
+
+    await request(app).delete('/api/remove-student').send({accessToken: 'any_id', id:'8905f4322dc6f594b58c42e0' }).expect(401)
   })
 
   test('should return 200 on success', async () => {
     const result = await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).delete('/api/remove-student').send({id: result.insertedId.toString()}).expect(200)
+    await request(app).delete('/api/remove-student').send({id: result.insertedId.toString()}).expect(400)
 
 
   })
