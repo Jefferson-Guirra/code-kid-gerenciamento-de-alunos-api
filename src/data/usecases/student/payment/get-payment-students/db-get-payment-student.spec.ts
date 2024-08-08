@@ -18,6 +18,11 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
   id: 'any_id'
 })
 
+const makeFakeRequest = () => ({
+  accessToken: 'any_token',
+  payment: 'yes'
+})
+
 
 const makeGetPaymentStudentsRepositoryStub = (): getPaymentStudentsRepository => {
   class getPaymentStudentsRepositoryStub implements getPaymentStudentsRepository {
@@ -51,21 +56,21 @@ describe('DbGetPaymentStudents', () => {
   test('should call getPaymentStudentsRepository with correct value', async () => {  
     const { getPaymentStudentsRepositoryStub, sut } = makeSut()
     const paymentSpy = jest.spyOn(getPaymentStudentsRepositoryStub, 'getPaymentStudents')
-    await sut.getStudents('yes')
+    await sut.getStudents(makeFakeRequest())
     expect(paymentSpy).toHaveBeenCalledWith('yes')
   })
 
   test('should return null if getPaymentStudentsRepository return null', async () => {  
     const { getPaymentStudentsRepositoryStub, sut } = makeSut()
     jest.spyOn(getPaymentStudentsRepositoryStub, 'getPaymentStudents').mockReturnValueOnce(Promise.resolve(null))
-    const response  = await sut.getStudents('yes')
+    const response  = await sut.getStudents(makeFakeRequest())
     expect(response).toBeFalsy()
   })
 
   test('should return throw if getPaymentStudentsRepository fails', async () => { 
     const { sut, getPaymentStudentsRepositoryStub } = makeSut()
     jest.spyOn(getPaymentStudentsRepositoryStub, 'getPaymentStudents').mockReturnValueOnce(Promise.reject(new Error()))
-    const promise = sut.getStudents('yes')
+    const promise = sut.getStudents(makeFakeRequest())
     await expect(promise).rejects.toThrow()
   })
 })
