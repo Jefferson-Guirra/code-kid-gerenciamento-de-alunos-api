@@ -1,5 +1,5 @@
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
-import { PaymentStudents } from '../../../../domain/usecases/student/payment-student';
+import { PaymentStudents, UserGetPayment } from '../../../../domain/usecases/student/payment-student';
 import { MissingParamsError } from '../../../errors/missing-params-error';
 import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
@@ -23,7 +23,7 @@ const makeFakeStudent  = (): AddStudentModel => ({
 
 const makeGetPaymentStudents = (): PaymentStudents => {
   class GetPaymentStudents implements PaymentStudents {
-    async getStudents (payment?: string): Promise<AddStudentModel[] | null> {
+    async getStudents (payment: UserGetPayment): Promise<AddStudentModel[] | null> {
       return Promise.resolve([makeFakeStudent(), makeFakeStudent()])
 
     }
@@ -33,7 +33,8 @@ const makeGetPaymentStudents = (): PaymentStudents => {
 
 const makeFakeRequest = (): HttpRequest  => ({
   body: {
-    payment: 'yes'
+    payment: 'yes',
+    accessToken: 'any_token'
   }
 })
 
@@ -82,7 +83,14 @@ describe('StudentPaymentController', () => {
     const { sut,getPaymentStudentsStub } = makeSut()
     const getSpy = jest.spyOn(getPaymentStudentsStub, 'getStudents')
     await sut.handle(makeFakeRequest())
-    expect(getSpy).toHaveBeenCalledWith('yes')
+    expect(getSpy).toHaveBeenCalledWith(makeFakeRequest().body)
+  })
+
+  test('should return 401 if Authentication fails ', async () => {
+    const { sut,getPaymentStudentsStub } = makeSut()
+    jest.spyOn(getPaymentStudentsStub, 'getStudents').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 
   test('should return 500 if PaymentStudents return throw ', async () => {
