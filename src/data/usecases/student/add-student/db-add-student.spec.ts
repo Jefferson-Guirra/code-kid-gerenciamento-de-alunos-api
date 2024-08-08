@@ -20,6 +20,7 @@ const makeFakeRequest = (): UserAddStudent => ({
     date_payment: ['any_date']
 })
 
+
 const makeFakeAddAccount = (): AccountLoginModel => ({
   username: 'any_username',
   email: 'any_email@mail.com',
@@ -84,6 +85,13 @@ describe('DbAddStudentRepository', () => {
     const loadSpy = jest.spyOn(loadAccountStub,  'loadByAccessToken')
     await sut.add(makeFakeRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_token')
+  })
+
+  test('should return null if LoadAccountByAccessToken return null',  async () => {
+    const { sut, loadAccountStub } = makeSut()
+    jest.spyOn(loadAccountStub,  'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.add(makeFakeRequest())
+    expect(response).toEqual(null)
   })
 
   test('should return null if LoadAccountByAccessToken fails',  async () => {
