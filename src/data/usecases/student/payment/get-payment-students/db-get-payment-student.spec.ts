@@ -1,4 +1,5 @@
 import { AddStudentModel } from '../../../../../domain/usecases/student/add-student';
+import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../../protocols/db/account/load-account-by-access-token-repository';
 import { getPaymentStudentsRepository } from '../../../../protocols/db/student/get-payment-students-repository';
 import { DbGetPaymentStudents } from './db-get-payment-students';
 
@@ -23,6 +24,15 @@ const makeFakeRequest = () => ({
   payment: 'yes'
 })
 
+const makeFakeAddAccount = (): AccountLoginModel => ({
+  username: 'any_username',
+  email: 'any_email@mail.com',
+  password: 'any_password',
+  id: 'any_id',
+  accessToken: 'any_token',
+  units: ['aby_unity']
+})
+
 
 const makeGetPaymentStudentsRepositoryStub = (): getPaymentStudentsRepository => {
   class getPaymentStudentsRepositoryStub implements getPaymentStudentsRepository {
@@ -34,24 +44,45 @@ const makeGetPaymentStudentsRepositoryStub = (): getPaymentStudentsRepository =>
   return new getPaymentStudentsRepositoryStub()
 }
 
+const makeLoadAccountByAccessTokenRepositoryStub = (): LoadAccountByAccessTokenRepository => {
+  class LoadAccountBYaccessTokenRepositoryStub implements LoadAccountByAccessTokenRepository {
+    async loadByAccessToken (accessToken: string): Promise<AccountLoginModel | null> {
+      return await Promise.resolve(makeFakeAddAccount())
+    }
+  }
+
+  return new LoadAccountBYaccessTokenRepositoryStub()
+}
+
+
 interface sutTypes {
+  loadAccountStub: LoadAccountByAccessTokenRepository
   getPaymentStudentsRepositoryStub: getPaymentStudentsRepository
   sut: DbGetPaymentStudents
 
 }
 
 const makeSut = (): sutTypes => {
+  const loadAccountStub = makeLoadAccountByAccessTokenRepositoryStub()
   const getPaymentStudentsRepositoryStub = makeGetPaymentStudentsRepositoryStub()
-  const sut = new DbGetPaymentStudents(getPaymentStudentsRepositoryStub)
+  const sut = new DbGetPaymentStudents(loadAccountStub ,getPaymentStudentsRepositoryStub)
 
   return {
+    sut,
+    loadAccountStub,
     getPaymentStudentsRepositoryStub,
-    sut
   }
 }
 
 
 describe('DbGetPaymentStudents', () => {
+
+  test('should call LoadAccountByAccessTokenRepositoryStub with correct value', async () => {  
+    const { loadAccountStub, sut } = makeSut()
+    const loadSpy = jest.spyOn(loadAccountStub, 'loadByAccessToken')
+    await sut.getStudents(makeFakeRequest())
+    expect(loadSpy).toHaveBeenCalledWith('any_token')
+  })
 
   test('should call getPaymentStudentsRepository with correct value', async () => {  
     const { getPaymentStudentsRepositoryStub, sut } = makeSut()
