@@ -17,7 +17,10 @@ export class StudentPaymentController implements Controller {
         return badRequest(error)
       }
 
-      const students = await this.paymentStudents.getStudents(body.payment)
+      const students = await this.paymentStudents.getStudents(body)
+      if (!students) {
+        return unauthorized()
+      }
       return ok(students)
     } catch(err) {
       return serverError(err as Error)
