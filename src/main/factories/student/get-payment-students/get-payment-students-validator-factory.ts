@@ -5,6 +5,9 @@ import { Validation } from '../../../../presentation/protocols/validation';
 
 export  const makeGetStudentPaymentValidator = (): Validation => {
   const validators: Validation[] = []
-  validators.push(new RequiredFieldsValidator('payment'), new CheckRequestValidator(['payment']))
+  validators.push(
+  new RequiredFieldsValidator('payment'), 
+  new RequiredFieldsValidator('accessToken'),
+  new CheckRequestValidator(['payment', 'accessToken']))
   return new ValidatorComposite(validators)
 }
