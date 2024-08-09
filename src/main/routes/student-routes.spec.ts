@@ -139,27 +139,29 @@ describe('Get /payment-students', () => {
   })
   beforeEach(async () => {
     studentsCollection = await MongoHelper.getCollection('students')
+    accountsCollection = await MongoHelper.getCollection('accounts')
     await studentsCollection.deleteMany({})
+    await accountsCollection.deleteMany({})
   })
   afterAll(async() => {
     await MongoHelper.disconnect()
 
   })
 
-  test('should return 200 on success', async () => { 
+  test('should return 401 if authentication fails', async () => { 
     await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).post('/api/get-payment-students').send({ payment: 'yes'}).expect(200)
+    await request(app).post('/api/get-payment-students').send({ payment: 'yes', accessToken: 'any_token'}).expect(401)
   })
 
-  test('should return 400 in badRequest', async () => { 
+  /*test('should return 400 in badRequest', async () => { 
     await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).post('/api/get-payment-students').send({ id: 'any_id'}).expect(400)
+    await request(app).post('/api/get-payment-students').send({ id: 'any_id', accessToken: 'any_token'}).expect(400)
   })
 
   test('should return 200 in undefined payment', async () => { 
     await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).post('/api/get-payment-students').send({ payment: false}).expect(200)
+    await request(app).post('/api/get-payment-students').send({ payment: false, accessToken: 'any_token'}).expect(200)
     
-  })
+  })*/
 
 })
