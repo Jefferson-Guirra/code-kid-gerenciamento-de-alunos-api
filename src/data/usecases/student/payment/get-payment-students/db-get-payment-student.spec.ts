@@ -77,7 +77,7 @@ const makeSut = (): sutTypes => {
 
 describe('DbGetPaymentStudents', () => {
 
-  test('should call LoadAccountByAccessTokenRepositoryStub with correct value', async () => {  
+  test('should call LoadAccountByAccessTokenRepository with correct value', async () => {  
     const { loadAccountStub, sut } = makeSut()
     const loadSpy = jest.spyOn(loadAccountStub, 'loadByAccessToken')
     await sut.getStudents(makeFakeRequest())
@@ -89,6 +89,13 @@ describe('DbGetPaymentStudents', () => {
     jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
     const response = await sut.getStudents(makeFakeRequest())
     expect(response).toBeFalsy()
+  })
+
+  test('should return throw if LoadAccountByAccessTokenRepository fails', async () => {  
+    const { loadAccountStub, sut } = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.reject(new Error()))
+    const promise =  sut.getStudents(makeFakeRequest())
+    await expect(promise).rejects.toThrow()
   })
   
 
