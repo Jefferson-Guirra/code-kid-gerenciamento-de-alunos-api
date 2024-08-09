@@ -18,7 +18,7 @@ const dbInsertAccount= async () => {
   })
 }
 
-const makeFakeRequest = (): HttpRequest => ({
+const makeFakeRequest = (payment: | 'yes' | 'not' ): HttpRequest => ({
   body:{
     name: 'any_name',
     age: 0,
@@ -26,7 +26,7 @@ const makeFakeRequest = (): HttpRequest => ({
     mother: 'any_mother',
     phone: 0,
     course: ['any_course'],
-    payment: 'yes',
+    payment,
     email: 'any_email@mail.com',
     registration: 'active',
     date_payment: ['any_date']
@@ -49,14 +49,14 @@ describe('POST /add-student', () => {
 
   test('should return 401 if account exist', async () => {
 
-    const student = makeFakeRequest()
+    const student = makeFakeRequest('yes')
     await studentsCollection.insertOne({...student.body})
     await request(app).post('/api/add-student').send(student.body).expect(401)
   })
 
   test('should return 200 on succeeds', async () => {
     await dbInsertAccount()
-    const fakeRequest = {accessToken: 'any_token', ...makeFakeRequest().body}
+    const fakeRequest = {accessToken: 'any_token', ...makeFakeRequest('yes').body}
     await request(app).post('/api/add-student').send(fakeRequest).expect(200)
   })
 
@@ -96,7 +96,7 @@ describe('DELETE /remove-student', () => {
 
   test('should return 200 on success', async () => {
     await dbInsertAccount()
-    const result = await studentsCollection.insertOne(makeFakeRequest().body)
+    const result = await studentsCollection.insertOne(makeFakeRequest('yes').body)
     await request(app).delete('/api/remove-student').send({accessToken: 'any_token',id: result.insertedId.toString()}).expect(200)
 
 
@@ -126,7 +126,7 @@ describe('PUT /update/student', () => {
 
   test('should return 200 on success', async () => {
     await dbInsertAccount()
-    const { insertedId } = await studentsCollection.insertOne(makeFakeRequest().body)
+    const { insertedId } = await studentsCollection.insertOne(makeFakeRequest('yes').body)
     await request(app).put('/api/update-student').send({ id: insertedId.toString(), phone: 12345, accessToken: 'any_token'}).expect(200)
 
   })
@@ -149,19 +149,22 @@ describe('Get /payment-students', () => {
   })
 
   test('should return 401 if authentication fails', async () => { 
-    await studentsCollection.insertOne(makeFakeRequest().body)
+    await studentsCollection.insertOne(makeFakeRequest('yes').body)
     await request(app).post('/api/get-payment-students').send({ payment: 'yes', accessToken: 'any_token'}).expect(401)
   })
 
   test('should return 400 in badRequest', async () => { 
-    await studentsCollection.insertOne(makeFakeRequest().body)
+    await studentsCollection.insertOne(makeFakeRequest('yes').body)
     await request(app).post('/api/get-payment-students').send({ id: 'any_id'}).expect(400)
   })
 
-  /*test('should return 200 in undefined payment', async () => { 
-    await studentsCollection.insertOne(makeFakeRequest().body)
+  test('should return 200 on succeeds', async () => { 
+    await dbInsertAccount()
+    await studentsCollection.insertOne(makeFakeRequest('yes').body)
+    await studentsCollection.insertOne(makeFakeRequest('not').body)
     await request(app).post('/api/get-payment-students').send({ payment: false, accessToken: 'any_token'}).expect(200)
+
     
-  })*/
+  })
 
 })
