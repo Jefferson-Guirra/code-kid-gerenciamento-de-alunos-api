@@ -12,7 +12,10 @@ export class DbGetPaymentStudents implements PaymentStudents {
   }
   async getStudents (request: UserGetPayment): Promise<AddStudentModel[] | null> {
     const { accessToken, payment} = request
-    await this.loadAccount.loadByAccessToken(accessToken)
+    const account = await this.loadAccount.loadByAccessToken(accessToken)
+    if(!account) {
+      return null
+    } 
     return await this.paymentStudents.getPaymentStudents(payment)
   }
 }
