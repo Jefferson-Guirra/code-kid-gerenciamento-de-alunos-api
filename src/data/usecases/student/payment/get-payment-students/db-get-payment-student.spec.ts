@@ -84,6 +84,14 @@ describe('DbGetPaymentStudents', () => {
     expect(loadSpy).toHaveBeenCalledWith('any_token')
   })
 
+  test('should return null if account not exist', async () => {  
+    const { loadAccountStub, sut } = makeSut()
+    jest.spyOn(loadAccountStub, 'loadByAccessToken').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.getStudents(makeFakeRequest())
+    expect(response).toBeFalsy()
+  })
+  
+
   test('should call getPaymentStudentsRepository with correct value', async () => {  
     const { getPaymentStudentsRepositoryStub, sut } = makeSut()
     const paymentSpy = jest.spyOn(getPaymentStudentsRepositoryStub, 'getPaymentStudents')
