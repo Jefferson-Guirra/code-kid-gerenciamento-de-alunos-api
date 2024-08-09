@@ -162,9 +162,15 @@ describe('Get /payment-students', () => {
     await dbInsertAccount()
     await studentsCollection.insertOne(makeFakeRequest('yes').body)
     await studentsCollection.insertOne(makeFakeRequest('not').body)
-    await request(app).post('/api/get-payment-students').send({ payment: false, accessToken: 'any_token'}).expect(200)
+    await request(app).post('/api/get-payment-students').send({ payment: 'not', accessToken: 'any_token'}).expect(200)
+  })
 
-    
+  test('should return all students if payment false', async () => { 
+    await dbInsertAccount()
+    await studentsCollection.insertOne(makeFakeRequest('yes').body)
+    await studentsCollection.insertOne(makeFakeRequest('not').body)
+    const {body : response} =  (await request(app).post('/api/get-payment-students').send({ payment: false, accessToken: 'any_token'}).expect(200)).body
+    expect(response.length).toEqual(2)
   })
 
 })
