@@ -153,12 +153,12 @@ describe('Get /payment-students', () => {
     await request(app).post('/api/get-payment-students').send({ payment: 'yes', accessToken: 'any_token'}).expect(401)
   })
 
-  /*test('should return 400 in badRequest', async () => { 
+  test('should return 400 in badRequest', async () => { 
     await studentsCollection.insertOne(makeFakeRequest().body)
-    await request(app).post('/api/get-payment-students').send({ id: 'any_id', accessToken: 'any_token'}).expect(400)
+    await request(app).post('/api/get-payment-students').send({ id: 'any_id'}).expect(400)
   })
 
-  test('should return 200 in undefined payment', async () => { 
+  /*test('should return 200 in undefined payment', async () => { 
     await studentsCollection.insertOne(makeFakeRequest().body)
     await request(app).post('/api/get-payment-students').send({ payment: false, accessToken: 'any_token'}).expect(200)
     
