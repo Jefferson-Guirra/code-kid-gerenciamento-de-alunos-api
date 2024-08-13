@@ -40,6 +40,13 @@ describe('AccountMongoRepository', () => {
   expect(account?.id).toBeTruthy()
   })
 
+  test('should return accessToken if update success', async () => { 
+    const sut = makeSut()
+    const addAccount = await accountsCollection.insertOne(makeFakeAddAccount())
+    const response = await sut.update(addAccount.insertedId.toString(), 'any_token')
+    expect(response).toEqual('any_token')
+  })
+
   test('should return account if loadAccount success', async () => {
     const {privateKey, passwordConfirmation,...rest} = makeFakeAddAccount()
     await accountsCollection.insertOne({...rest})
