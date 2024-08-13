@@ -139,6 +139,13 @@ describe('first', () => {
     expect(updateSpy).toHaveBeenLastCalledWith('any_id', 'encrypt_value')
    })
 
+   test('should return throw updateAccessToken fails', async () => { 
+    const { sut, updateAccessTokenStub } = makeSut()
+    jest.spyOn(updateAccessTokenStub, 'update').mockReturnValueOnce(Promise.reject(new Error()))
+    const promise = sut.auth('any_email@mail.com', 'any_password')
+    await expect(promise).rejects.toThrow()
+   })
+
   test('should  return accountData on succeeds', async () => { 
     const { sut } = makeSut()
     const response = await sut.auth('any_email@mail.com', 'any_password')
