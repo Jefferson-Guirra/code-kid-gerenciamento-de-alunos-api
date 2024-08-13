@@ -13,6 +13,6 @@ export const makeLoginControllerFactory = (): Controller => {
   const accountMongoRepository = new AccountMongoRepository()
   const jwtAdapter = new JwtAdapter(env.jwtSecret)
   const bcryptAdapter = new BcryptAdapter(salt)
-  const dbAuthentication = new DbAuthentication(accountMongoRepository, bcryptAdapter, jwtAdapter)
+  const dbAuthentication = new DbAuthentication(accountMongoRepository, bcryptAdapter, jwtAdapter,accountMongoRepository)
   return new LoginController(validator, dbAuthentication)
 }
