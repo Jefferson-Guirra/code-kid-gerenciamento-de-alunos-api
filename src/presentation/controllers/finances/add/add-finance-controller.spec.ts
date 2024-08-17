@@ -1,18 +1,19 @@
-import { Finance } from '../../../../domain/models/finance';
+import { FinanceModel } from '../../../../domain/models/finance';
 import { AddFinance, AddFinanceModel } from '../../../../domain/usecases/finance/add-finance';
 import { MissingParamsError } from '../../../errors/missing-params-error';
-import { badRequest, serverError } from '../../../helpers/http/http';
+import { badRequest, serverError, unauthorized } from '../../../helpers/http/http';
 import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { AddFinanceController } from './add-finance-controller';
 
-const makeFakeFinance = (): Finance => ({
+const makeFakeFinance = (): AddFinanceModel => ({
   price: 0,
   type: 'others',
   date:'any_date',
   day: 'any_day',
   month: 'any_month',
-  year: 'any_year'
+  year: 'any_year',
+  accessToken: 'any_token'
 })
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -20,7 +21,7 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 const makeAddFinanceStub = (): AddFinance => {
   class AddFinanceStub implements AddFinance {
-    async addFinance (finance: Finance): Promise<AddFinanceModel | null> {
+    async addFinance (finance: AddFinanceModel): Promise<FinanceModel | null> {
       return await Promise.resolve({...makeFakeFinance(), id: 'any_id'})
 
     }
@@ -77,6 +78,13 @@ describe('AddFinanceController', () => {
     const addSpy = jest.spyOn(addFinanceStub, 'addFinance')
     await sut.handle(makeFakeRequest())
     expect(addSpy).toHaveBeenCalledWith(makeFakeFinance())
+  })
+
+  test('should return 401 if unauthorized', async () => {
+    const { sut, addFinanceStub } = makeSut()
+    jest.spyOn(addFinanceStub, 'addFinance').mockReturnValueOnce(Promise.resolve(null))
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(unauthorized())
   })
 
   test('should return 500 if AddFinance fails', async () => {

@@ -1,6 +1,7 @@
 
 
-export interface Finance {
+export interface FinanceModel {
+  id: string
   price: number,
   type: | 'energy' | 'water' | 'rent' | 'cleaning' | 'others' | 'employees'
   date: string
