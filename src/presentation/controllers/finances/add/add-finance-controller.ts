@@ -1,5 +1,5 @@
 import { AddFinance } from '../../../../domain/usecases/finance/add-finance';
-import { badRequest, ok, serverError } from '../../../helpers/http/http';
+import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http';
 import { Controller } from '../../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
@@ -16,7 +16,10 @@ export class AddFinanceController implements Controller {
         return badRequest(error)
       }
       const body = request.body
-      await this.finance.addFinance(body)
+      const finance = await this.finance.addFinance(body)
+      if(!finance) {
+        return unauthorized()
+      }
       return ok('ok')
     }
     catch(err) {
