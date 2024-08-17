@@ -1,5 +1,5 @@
-import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
+import { StudentModel } from '../../../../domain/models/student';
 
 export interface getPaymentStudentsRepository {
-  getPaymentStudents: (payment?: string) => Promise<AddStudentModel[] | null>
+  getPaymentStudents: (payment?: string) => Promise<StudentModel[] | null>
 }

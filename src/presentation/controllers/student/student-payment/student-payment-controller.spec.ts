@@ -1,3 +1,4 @@
+import { StudentModel } from '../../../../domain/models/student';
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
 import { PaymentStudents, UserGetPayment } from '../../../../domain/usecases/student/payment-student';
 import { MissingParamsError } from '../../../errors/missing-params-error';
@@ -6,7 +7,7 @@ import { HttpRequest } from '../../../protocols/http';
 import { Validation } from '../../../protocols/validation';
 import { StudentPaymentController } from './student-payment-controller';
 
-const makeFakeStudent  = (): AddStudentModel => ({
+const makeFakeStudent  = (): StudentModel => ({
   name: 'any_name',
   id: 'any_id',
   email: 'any_email@mail.com',
@@ -23,7 +24,7 @@ const makeFakeStudent  = (): AddStudentModel => ({
 
 const makeGetPaymentStudents = (): PaymentStudents => {
   class GetPaymentStudents implements PaymentStudents {
-    async getStudents (payment: UserGetPayment): Promise<AddStudentModel[] | null> {
+    async getStudents (payment: UserGetPayment): Promise<StudentModel[] | null> {
       return Promise.resolve([makeFakeStudent(), makeFakeStudent()])
 
     }

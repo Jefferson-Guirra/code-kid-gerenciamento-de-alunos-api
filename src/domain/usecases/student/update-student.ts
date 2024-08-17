@@ -1,5 +1,5 @@
-import { AddStudentModel } from './add-student'
+import { StudentModel } from '../../models/student'
 
 export interface UpdateStudent {
-  update: (id: string, updateFields: any) => Promise<AddStudentModel | null>
+  update: (id: string, updateFields: any) => Promise<StudentModel | null>
 }

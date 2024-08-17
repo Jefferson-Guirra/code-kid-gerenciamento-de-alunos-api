@@ -1,3 +1,4 @@
+import { StudentModel } from '../../../../domain/models/student'
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { UpdateStudent } from '../../../../domain/usecases/student/update-student'
 import { MissingParamsError } from '../../../errors/missing-params-error'
@@ -32,7 +33,7 @@ interface SutTypes {
 
 const makeUpdateStudentStub = (): UpdateStudent => {
   class UpdateStudentStub implements UpdateStudent {
-    async update (id: string, updateFields: any) : Promise<AddStudentModel | null> {
+    async update (id: string, updateFields: any) : Promise<StudentModel | null> {
       return await Promise.resolve({
         id: 'any_id',
         price: 0,

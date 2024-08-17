@@ -1,4 +1,5 @@
-export interface Student {
+export interface StudentModel {
+  id: string
   name: string,
   price: number,
   age: number,

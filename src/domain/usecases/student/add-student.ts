@@ -1,13 +1,20 @@
-import { Student } from '../../models/student';
+import { StudentModel } from '../../models/student';
 
-export interface AddStudentModel  extends Student{
-  id: string
-}
-
-export interface UserAddStudent extends Student {
+export interface AddStudentModel{
+  name: string,
+  price: number,
+  age: number,
+  father: string
+  mother:string,
+  phone: number,
+  course: string[],
+  payment: string,
+  date_payment: string[],
+  email: string,
+  registration: | 'active' | 'suspense' | 'inactive'
   accessToken: string
 }
 
 export interface AddStudent {
-  add: (student: UserAddStudent) => Promise<AddStudentModel | null>
+  add: (student: AddStudentModel) => Promise<StudentModel | null>
 }

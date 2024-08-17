@@ -1,3 +1,4 @@
+import { StudentModel } from '../../../../domain/models/student'
 import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository'
 import { UpdateStudentByIdRepository } from '../../../protocols/db/student/update-student-by-id-repository'
@@ -31,7 +32,7 @@ const makeFakeRequest = () => ({
 
 })
 
-const updateStudentStub = (): AddStudentModel => ({
+const updateStudentStub = (): StudentModel => ({
   id: 'any_id',
   name: 'any_name',
   price: 0,
@@ -48,7 +49,7 @@ const updateStudentStub = (): AddStudentModel => ({
 
 const makeUpdateStudentByIdStub = (): UpdateStudentByIdRepository => {
   class updateStudentByIdRepositoryStub implements UpdateStudentByIdRepository {
-    async updateStudent (id: string, updateFields: any): Promise<AddStudentModel | null> {
+    async updateStudent (id: string, updateFields: any): Promise<StudentModel | null> {
       return await Promise.resolve(updateStudentStub()) 
     }
   }

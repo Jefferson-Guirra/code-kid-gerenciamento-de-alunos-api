@@ -1,5 +1,5 @@
-import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
+import { StudentModel } from '../../../../domain/models/student';
 
 export interface LoadStudentByNameRepository {
-  loadByName: (name: string) => Promise<AddStudentModel | null>
+  loadByName: (name: string) => Promise<StudentModel | null>
 }

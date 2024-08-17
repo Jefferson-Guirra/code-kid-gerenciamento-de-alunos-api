@@ -1,4 +1,5 @@
-import { Student } from '../../../../domain/models/student'
+
+import { StudentModel } from '../../../../domain/models/student'
 import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student'
 import { MissingParamsError } from '../../../errors/missing-params-error'
 import { badRequest, ok, serverError, unauthorized } from '../../../helpers/http/http'
@@ -20,7 +21,7 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
-const makeFakeAddStudentModel = (): AddStudentModel => ({
+const makeFakeAddStudentModel = (): StudentModel => ({
   name: 'any_name',
   age: 0,
   father: 'any_father',
@@ -37,7 +38,7 @@ const makeFakeAddStudentModel = (): AddStudentModel => ({
 
 const makeAddStudentStub = (): AddStudent => {
   class AddStudentStub implements AddStudent {
-    async add(student: Student): Promise<AddStudentModel | null> {
+    async add(student: AddStudentModel): Promise<StudentModel | null> {
       return await Promise.resolve(makeFakeAddStudentModel())
     }
   }

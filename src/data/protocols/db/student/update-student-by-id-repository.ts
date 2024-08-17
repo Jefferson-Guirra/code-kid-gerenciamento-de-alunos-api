@@ -1,5 +1,5 @@
-import { AddStudentModel } from '../../../../domain/usecases/student/add-student';
+import { StudentModel } from '../../../../domain/models/student';
 
 export interface UpdateStudentByIdRepository {
-  updateStudent: (id: string, updateFields: any) => Promise<AddStudentModel | null >
+  updateStudent: (id: string, updateFields: any) => Promise<StudentModel | null >
 }

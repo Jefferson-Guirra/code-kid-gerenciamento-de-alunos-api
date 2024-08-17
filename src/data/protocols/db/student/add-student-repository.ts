@@ -1,6 +1,7 @@
-import { Student } from '../../../../domain/models/student';
-import { AddStudent, AddStudentModel } from '../../../../domain/usecases/student/add-student';
+import { StudentModel } from '../../../../domain/models/student';
+
+export type AddStudentModelMongoRepository = Omit<StudentModel, 'id'>
 
 export interface AddStudentRepository {
-  add: (student: Student) => Promise<AddStudentModel | null>
+  add: (student: AddStudentModelMongoRepository) => Promise<StudentModel | null>
 }

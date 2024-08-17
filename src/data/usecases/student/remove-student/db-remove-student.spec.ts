@@ -1,10 +1,10 @@
-import { AddStudentModel } from '../../../../domain/usecases/student/add-student'
+import { StudentModel } from '../../../../domain/models/student'
 import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository'
 import { LoadStudentByIdRepository } from '../../../protocols/db/student/load-student-by-id-repository'
 import { RemoveStudentByIdRepository } from '../../../protocols/db/student/remove-student-by-id-repository'
 import { DbRemoveStudent } from './db-remove-student'
 
-const makeFakeAddStudentModel = (): AddStudentModel => ({
+const makeFakeAddStudentModel = (): StudentModel => ({
   name: 'any_name',
   age: 0,
   price:0,
@@ -40,7 +40,7 @@ const makeLoadAccountByAccessTokenRepositoryStub = (): LoadAccountByAccessTokenR
 }
 const makeLoadStudentByIdRepository= (): LoadStudentByIdRepository => {
   class LoadStudentByIdRepositoryStub implements LoadStudentByIdRepository {
-    async loadById (id: string): Promise<AddStudentModel | null> {
+    async loadById (id: string): Promise<StudentModel | null> {
       return await Promise.resolve(makeFakeAddStudentModel())
     }
   }

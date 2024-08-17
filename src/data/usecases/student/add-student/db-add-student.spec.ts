@@ -1,11 +1,11 @@
-import { Student } from '../../../../domain/models/student';
-import { AddStudentModel, UserAddStudent } from '../../../../domain/usecases/student/add-student';
+import { StudentModel } from '../../../../domain/models/student';
+import { AddStudentModel} from '../../../../domain/usecases/student/add-student';
 import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../protocols/db/account/load-account-by-access-token-repository';
-import { AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
+import { AddStudentModelMongoRepository, AddStudentRepository } from '../../../protocols/db/student/add-student-repository';
 import { LoadStudentByNameRepository } from '../../../protocols/db/student/load-student-by-name-repository';
 import { DbAddStudentRepository } from './db-add-student';
 
-const makeFakeRequest = (): UserAddStudent => ({
+const makeFakeRequest = (): AddStudentModel => ({
     name: 'any_name',
     accessToken: 'any_token',
     age: 0,
@@ -32,7 +32,7 @@ const makeFakeAddAccount = (): AccountLoginModel => ({
 
 const makeLoadStudentStub = (): LoadStudentByNameRepository => {
   class LoadStudentStub implements LoadStudentByNameRepository {
-    async loadByName (name: string): Promise<AddStudentModel | null> {
+    async loadByName (name: string): Promise<StudentModel | null> {
       return await Promise.resolve(null)
     }
   }
@@ -41,7 +41,7 @@ const makeLoadStudentStub = (): LoadStudentByNameRepository => {
 
 const makeAddStudentRepositoryStub = (): AddStudentRepository => {
   class AddStudentRepositoryStub implements AddStudentRepository {
-    async add(student: Student): Promise<AddStudentModel | null> {
+    async add(student: AddStudentModelMongoRepository): Promise<StudentModel | null> {
       return await Promise.resolve({...makeFakeRequest(), id: 'any_id'})
     }
   }

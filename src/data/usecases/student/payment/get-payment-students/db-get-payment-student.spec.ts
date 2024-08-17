@@ -1,22 +1,23 @@
+import { StudentModel } from '../../../../../domain/models/student';
 import { AddStudentModel } from '../../../../../domain/usecases/student/add-student';
 import { AccountLoginModel, LoadAccountByAccessTokenRepository } from '../../../../protocols/db/account/load-account-by-access-token-repository';
 import { getPaymentStudentsRepository } from '../../../../protocols/db/student/get-payment-students-repository';
 import { DbGetPaymentStudents } from './db-get-payment-students';
 
 
-const makeFakeAddStudentModel = (): AddStudentModel => ({
-  name: 'any_name',
+const makeFakeAddStudentModel = (): StudentModel => ({
   age: 0,
+  email: 'any_email@mail.com',
+  id: 'any_id',
+  name: 'any_name',
   price:0,
   father: 'any_father',
   mother: 'any_mother',
   phone: 0,
   course: ['any_course'],
-  email: 'any_email@mail.com',
   payment: 'yes',
   registration: 'active',
   date_payment: ['any_date'],
-  id: 'any_id'
 })
 
 const makeFakeRequest = () => ({
@@ -36,7 +37,7 @@ const makeFakeAddAccount = (): AccountLoginModel => ({
 
 const makeGetPaymentStudentsRepositoryStub = (): getPaymentStudentsRepository => {
   class getPaymentStudentsRepositoryStub implements getPaymentStudentsRepository {
-    async getPaymentStudents (payment?: string): Promise<AddStudentModel[] | null> {
+    async getPaymentStudents (payment?: string): Promise<StudentModel[] | null> {
       const fakeAddStudentModel = [makeFakeAddStudentModel(), makeFakeAddStudentModel()]
       return await Promise.resolve(fakeAddStudentModel)
     }

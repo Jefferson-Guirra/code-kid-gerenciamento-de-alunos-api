@@ -1,10 +1,10 @@
 import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { StudentMongoRepository } from './student-mongo-repository'
-import { Student } from '../../../domain/models/student'
-import { AddStudentModel } from '../../../domain/usecases/student/add-student'
+import { StudentModel } from '../../../domain/models/student'
+import { AddStudentModelMongoRepository } from '../../../data/protocols/db/student/add-student-repository'
 
-const makeFakeRequest = (): Student => ({
+const makeFakeRequest = (): AddStudentModelMongoRepository => ({
   name: 'any_name',
   price: 0,
   age: 0,
@@ -18,7 +18,9 @@ const makeFakeRequest = (): Student => ({
   date_payment: ['any_date']
 })
 
-const makeAddIdsStudents = (id: ObjectId, payment?: string): AddStudentModel => ({
+
+
+const makeAddIdsStudents = (id: ObjectId, payment?: string): StudentModel => ({
   name: 'any_name',
   price: 0,
   age: 0,

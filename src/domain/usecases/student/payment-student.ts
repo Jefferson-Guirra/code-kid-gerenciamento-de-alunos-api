@@ -1,4 +1,4 @@
-import { AddStudentModel } from './add-student';
+import { StudentModel } from '../../models/student';
 
 export interface UserGetPayment {
   payment?: string,
@@ -6,5 +6,5 @@ export interface UserGetPayment {
 }
 
 export interface PaymentStudents {
-  getStudents: ( payment: UserGetPayment) => Promise<AddStudentModel[]| null>
+  getStudents: ( payment: UserGetPayment) => Promise<StudentModel[]| null>
 }
